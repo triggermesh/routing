@@ -30,6 +30,7 @@ apiVersion: sources.knative.dev/v1beta2
 kind: PingSource
 metadata:
   name: ps1
+  namespace: default
 spec:
   contentType: application/json
   data: '{"id":{"first":5,"second":3}}'
@@ -39,11 +40,13 @@ spec:
       apiVersion: routing.triggermesh.io/v1alpha1
       kind: Filter
       name: filter-test
+      namespace: default
 ---
 apiVersion: sources.knative.dev/v1beta2
 kind: PingSource
 metadata:
   name: ps2
+  namespace: default
 spec:
   contentType: application/json
   data: '{"id":{"first":2,"second":3}}'
@@ -53,11 +56,13 @@ spec:
       apiVersion: routing.triggermesh.io/v1alpha1
       kind: Filter
       name: filter-test
+      namespace: default
 ---
 apiVersion: sources.knative.dev/v1beta2
 kind: PingSource
 metadata:
   name: ps3
+  namespace: default
 spec:
   contentType: application/json
   data: '{"foo":"bar"}'
@@ -67,6 +72,7 @@ spec:
       apiVersion: routing.triggermesh.io/v1alpha1
       kind: Filter
       name: filter-test
+      namespace: default
 ---
 apiVersion: serving.knative.dev/v1
 kind: Service

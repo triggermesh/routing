@@ -71,7 +71,7 @@ func parseExpressionString(expression string) (string, []Variable, error) {
 		}
 		typ += start
 
-		end := strings.Index(expression[start:], ")") + start
+		end := strings.Index(expression[start:], ")")
 		if end == -1 {
 			return "", []Variable{}, errVarType
 		}
