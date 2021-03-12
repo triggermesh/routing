@@ -1,0 +1,169 @@
+# Copyright 2021 Triggermesh Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: triggermesh-filter-admin
+aggregationRule:
+  clusterRoleSelectors:
+  - matchLabels:
+      filter.triggermesh.io/controller: "true"
+rules: [] # Rules are automatically filled in by the controller manager.
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: triggermesh-filter-core
+  labels:
+    filter.triggermesh.io/controller: "true"
+rules:
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    - services
+    - secrets
+    - events
+    verbs: 
+    - get
+    - list
+    - create
+    - update
+    - delete
+    - patch
+    - watch
+  - apiGroups: 
+    - apps
+    resources:
+    - deployments
+    - deployments/finalizers # finalizers are needed for the owner reference of the webhook
+    verbs:
+    - get
+    - list
+    - create
+    - update
+    - delete
+    - patch
+    - watch
+  - apiGroups:
+    - coordination.k8s.io
+    resources: 
+    - leases
+    verbs:
+    - get
+    - list
+    - create
+    - update
+    - delete
+    - patch
+    - watch
+  - apiGroups:
+    - admissionregistration.k8s.io
+    resources:
+    - mutatingwebhookconfigurations
+    - validatingwebhookconfigurations
+    verbs:
+    - get
+    - list
+    - create
+    - update
+    - delete
+    - patch
+    - watch
+  # - apiGroups:
+  #   - apiextensions.k8s.io
+  #   resources:
+  #   - customresourcedefinitions
+  #   verbs:
+  #   - get
+  #   - list
+  #   - create
+  #   - update
+  #   - delete
+  #   - patch
+  #   - watch
+  - apiGroups:
+    - routing.triggermesh.io
+    resources:
+    - "*"
+    verbs:
+    - get
+    - list
+    - create
+    - update
+    - delete
+    - deletecollection
+    - patch
+    - watch
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: triggermesh-filter-deployment
+rules:
+  - apiGroups: 
+    - ""
+    resources:
+    - configmaps
+    - services
+    - secrets
+    - events
+    - pods
+    verbs:
+    - get
+    - list
+    - create
+    - update
+    - delete
+    - patch
+    - watch
+  - apiGroups:
+    - routing.triggermesh.io
+    resources:
+    - filters
+    verbs:
+    - get
+    - list
+    - watch
+---
+# Use this aggregated ClusterRole when you need readonly access to "Addressables"
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: addressable-resolver
+aggregationRule:
+  clusterRoleSelectors:
+  - matchLabels:
+      duck.knative.dev/addressable: "true"
+rules: [] # Rules are automatically filled in by the controller manager.
+---
+# The role is needed for the aggregated role addressable-resolver in knative-eventing to provide readonly access to "Addressables".
+# see https://github.com/knative/eventing/blob/release-0.16/docs/spec/channel.md#aggregated-addressable-resolver-clusterrole
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: filter-addressable-resolver
+  labels:
+    duck.knative.dev/addressable: "true"
+rules:
+- apiGroups:
+  - routing.triggermesh.io
+  resources:
+  - filters
+  - filters/status
+  verbs:
+  - get
+  - list
+  - watch
