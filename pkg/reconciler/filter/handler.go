@@ -119,6 +119,8 @@ func (h *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	ctx := request.Context()
 
 	message := cehttp.NewMessageFromHttpRequest(request)
+	// cannot be err, but makes linter complain about missing err check
+	//nolint
 	defer message.Finish(nil)
 
 	event, err := binding.ToEvent(ctx, message)
@@ -193,6 +195,8 @@ func (h *Handler) sendEvent(ctx context.Context, headers http.Header, target str
 	}
 
 	message := binding.ToMessage(event)
+	// cannot be err, but makes linter complain about missing err check
+	//nolint
 	defer message.Finish(nil)
 
 	additionalHeaders := utils.PassThroughHeaders(headers)
@@ -212,6 +216,8 @@ func (h *Handler) sendEvent(ctx context.Context, headers http.Header, target str
 // The return values are the status
 func (h *Handler) writeResponse(ctx context.Context, writer http.ResponseWriter, resp *http.Response, target string) (int, error) {
 	response := cehttp.NewMessageFromHttpResponse(resp)
+	// cannot be err, but makes linter complain about missing err check
+	//nolint
 	defer response.Finish(nil)
 
 	if response.ReadEncoding() == binding.EncodingUnknown {
@@ -243,6 +249,8 @@ func (h *Handler) writeResponse(ctx context.Context, writer http.ResponseWriter,
 	}
 
 	eventResponse := binding.ToMessage(event)
+	// cannot be err, but makes linter complain about missing err check
+	//nolint
 	defer eventResponse.Finish(nil)
 
 	if err := cehttp.WriteResponseWriter(ctx, eventResponse, resp.StatusCode, writer); err != nil {
