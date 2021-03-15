@@ -104,7 +104,7 @@ jobs:
           working_directory: tmconfig/
           command: |
             for cmd in $(sed -n -e 's/^COMMANDS[[:space:]]*=[[:space:]]*\(.*\)$/\1/p' ~/project/Makefile); do
-              sed -i overlays/<< parameters.cluster >>/filter/deployment.yaml \
+              sed -i overlays/<< parameters.cluster >>/filter/${cmd}.yaml \
                 -e "s|\(gcr.io/triggermesh-private/${cmd}:\).*|\1${CIRCLE_TAG:-${CIRCLE_SHA1}}|g"
             done
             git --no-pager diff
