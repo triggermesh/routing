@@ -64,7 +64,7 @@ func parseExpressionString(expression string) (string, []Variable, error) {
 			break
 		}
 
-		// start looking for the variablw type after the variable name
+		// start looking for the variable type after the variable name
 		typ := strings.Index(expression[start:], ".(")
 		if typ == -1 {
 			return "", []Variable{}, errVarType

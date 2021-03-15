@@ -68,8 +68,8 @@ type Handler struct {
 	logger       *zap.Logger
 
 	// expressions is the map of trigger refs with precompiled CEL expressions
-	// TODO (tzununbekov): Add mutex and cleanup
-	expressions map[string]cel.ConditionalFilter
+	// TODO (tzununbekov): Add cleanup
+	expressions *expressionStorage
 }
 
 // NewHandler creates a new Handler and its associated MessageReceiver. The caller is responsible for
@@ -90,7 +90,7 @@ func NewHandler(logger *zap.Logger, filterLister filterlisters.FilterLister, por
 		sender:       sender,
 		filterLister: filterLister,
 		logger:       logger,
-		expressions:  make(map[string]cel.ConditionalFilter),
+		expressions:  newExpressionStorage(),
 	}, nil
 }
 
@@ -109,7 +109,7 @@ func (h *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	ref, err := parse(request.RequestURI)
+	ref, err := parseRequestURI(request.RequestURI)
 	if err != nil {
 		h.logger.Info("Unable to parse path as filter", zap.Error(err), zap.String("path", request.RequestURI))
 		writer.WriteHeader(http.StatusBadRequest)
@@ -139,27 +139,23 @@ func (h *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 
 	ctx = logging.WithLogger(ctx, h.logger.Sugar())
 
-	cond, exists := h.expressions[fmt.Sprintf("%s-%d", f.UID, f.Generation)]
-	if len(f.Spec.Expression) != 0 && !exists {
+	cond, exists := h.expressions.get(f.UID, f.Generation)
+	if !exists {
 		cond, err = cel.CompileExpression(f.Spec.Expression)
 		if err != nil {
 			h.logger.Info("Failed to compile filter expression", zap.Error(err), zap.Any("filterRef", ref))
 			writer.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		h.expressions[fmt.Sprintf("%s-%d", f.UID, f.Generation)] = cond
+		h.expressions.set(f.UID, f.Generation, cond)
 	}
 
-	filterResult := filterEvent(ctx, &f.Spec, cond, *event)
-
+	filterResult := filterEvent(ctx, cond, *event)
 	if filterResult == eventfilter.FailFilter {
-		// We do not count the event. The event will be counted in the broker ingress.
-		// If the filter didn't pass, it means that the event wasn't meant for this Trigger.
 		return
 	}
 
 	event = updateAttributes(f.Status, event)
-
 	h.send(ctx, writer, request.Header, f.Status.SinkURI.String(), event)
 }
 
@@ -262,28 +258,25 @@ func (h *Handler) getFilter(ref filterRef) (*filterv1alpha1.Filter, error) {
 	return h.filterLister.Filters(ref.namespace).Get(ref.name)
 }
 
-func filterEvent(ctx context.Context, filter *filterv1alpha1.FilterSpec, celFilter cel.ConditionalFilter, event cloudevents.Event) eventfilter.FilterResult {
-	if filter == nil {
-		return eventfilter.NoFilter
-	}
+func filterEvent(ctx context.Context, filter cel.ConditionalFilter, event cloudevents.Event) eventfilter.FilterResult {
 	var filters eventfilter.Filters
-	if celFilter.Expression != nil {
-		filters = append(filters, &celFilter)
+	if filter.Expression != nil {
+		filters = append(filters, &filter)
 	}
 
 	return filters.Filter(ctx, event)
 }
 
-func parse(path string) (filterRef, error) {
+func parseRequestURI(path string) (filterRef, error) {
 	parts := strings.Split(path, "/")
 	if len(parts) != 4 {
-		return filterRef{}, fmt.Errorf("incorrect number of parts in the path, expected 5, actual %d, '%s'", len(parts), path)
+		return filterRef{}, fmt.Errorf("incorrect number of parts in the path, expected 4, actual %d, '%s'", len(parts), path)
 	}
 	if parts[0] != "" {
 		return filterRef{}, fmt.Errorf("text before the first slash, actual '%s'", path)
 	}
 	if parts[1] != "filters" {
-		return filterRef{}, fmt.Errorf("incorrect prefix, expected '%s', actual '%s'", "filters", path)
+		return filterRef{}, fmt.Errorf("incorrect prefix, expected 'filters', actual '%s'", path)
 	}
 	return filterRef{
 		namespace: parts[2],

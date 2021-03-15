@@ -84,6 +84,10 @@ func (r *Reconciler) ReconcileKind(ctx context.Context, o *filterv1alpha1.Filter
 		return err
 	}
 
+	if o.Spec.Sink.Ref != nil && o.Spec.Sink.Ref.Namespace == "" {
+		o.Spec.Sink.Ref.Namespace = o.Namespace
+	}
+
 	sink, err := r.sinkResolver.URIFromDestinationV1(ctx, *o.Spec.Sink, o)
 	if err != nil {
 		logger.Errorf("Error resolving sink URI: %v", err)
