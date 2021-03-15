@@ -1,14 +1,17 @@
 # Triggermesh Content Filter
 
-Triggermesh Content Filter is an addressable Kubernetes object that filters incoming 
-CloudEvents according to the provided expression. Events with the content that makes 
-the expression result "true", are forwarded to the Sink. Filter's expression is a 
-combination of Google [CEL](https://github.com/google/cel-spec) with the inline types 
-assertion required by [GJSON](https://github.com/tidwall/gjson). Here is an example of
-JSON payload and the Filter expression:
+Triggermesh Content Filter is an addressable Kubernetes object that filters
+incoming CloudEvents according to the provided expression. Filter's
+Specification consists of only two fields, but they are both required: the
+expression and the sink. Events whose content makes the result of the expression
+equal to "true" are dispatched to the sink. Filter's expression is a combination
+of Google [CEL](https://github.com/google/cel-spec) with the inline types
+assertion required by [GJSON](https://github.com/tidwall/gjson). Here is an
+example of JSON payload and the expression that access different payload's
+paths:
 
 CE data
-```
+```json
 {
     "id": {
         "first":5,
@@ -31,10 +34,49 @@ The expression variables are defined as `$.<json path>.(type)`, where "type" can
 - double (Go's `float64`)
 - string
 
-[config/samples](./config/samples) directory contains an example of the Filter with the Sockeye service and Pingsources with the different payloads - deploy the manifest and play with the Filter's expression.
+
+Example of Filter Object:
+
+```yaml
+apiVersion: routing.triggermesh.io/v1alpha1
+kind: Filter
+metadata:
+  name: filter-test
+spec:
+  expression: $id.first.(int64) + $id.second.(int64) == 8
+  sink:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: sockeye
+```
+<i>CloudEvent will be sent to Sockeye service only if event's payload contains
+`id.first` and `id.second` paths and the sum of their values is equal to 8.</i>
 
 
-# README is WIP
+## Installation
+
+Filter can be compiled and deployed from source with [ko](https://github.com/google/ko):
+
+```
+ko apply -f ./config
+```
+
+You can verify that it's installed by checking that the controller is running:
+
+```
+$ kubectl -n filter get pods -l app=filter-controller
+NAME                                 READY   STATUS    RESTARTS   AGE
+filter-controller-6ff9bfb568-8w977   1/1     Running   0          2m
+```
+
+A custom resource of kind `Filter` can now be created, check a
+[sample](config/samples/filter.yaml).
+
+
+## Performance
+
+TBD
 
 ## Support
 
