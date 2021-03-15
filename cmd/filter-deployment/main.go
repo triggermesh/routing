@@ -26,18 +26,16 @@ import (
 	configmap "knative.dev/pkg/configmap/informer"
 	"knative.dev/pkg/controller"
 	"knative.dev/pkg/injection"
+	"knative.dev/pkg/injection/sharedmain"
 	"knative.dev/pkg/logging"
 	"knative.dev/pkg/metrics"
 	"knative.dev/pkg/signals"
 	"knative.dev/pkg/system"
 
-	"github.com/triggermesh/filter/pkg/reconciler/config"
-	"github.com/triggermesh/filter/pkg/reconciler/filter"
-
-	"knative.dev/pkg/injection/sharedmain"
-
 	filterv1alpha1 "github.com/triggermesh/filter/pkg/client/generated/clientset/internalclientset"
 	filterinformers "github.com/triggermesh/filter/pkg/client/generated/informers/externalversions"
+	"github.com/triggermesh/filter/pkg/reconciler/config"
+	"github.com/triggermesh/filter/pkg/reconciler/filter"
 )
 
 const (

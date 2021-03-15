@@ -7,13 +7,13 @@
 /.dockerignore
 /.gcloudignore
 /cloudbuild.yaml
+/config/
 
 # Files copied to KO_DATA_PATH directory
 !/.git/HEAD
 !/.git/refs/
 
 # Patterns
-**/config/
 **/*.md
 **/*_test.go
 **/.gitignore

@@ -19,18 +19,17 @@ package controller
 import (
 	"context"
 
-	"knative.dev/pkg/resolver"
-	"knative.dev/pkg/tracker"
-
 	corev1 "k8s.io/api/core/v1"
+	svcinformer "knative.dev/pkg/client/injection/kube/informers/core/v1/service"
 	"knative.dev/pkg/configmap"
 	"knative.dev/pkg/controller"
 	"knative.dev/pkg/logging"
+	"knative.dev/pkg/resolver"
+	"knative.dev/pkg/tracker"
 
 	filterinformer "github.com/triggermesh/filter/pkg/client/generated/injection/informers/filter/v1alpha1/filter"
 	filterreconciler "github.com/triggermesh/filter/pkg/client/generated/injection/reconciler/filter/v1alpha1/filter"
 	"github.com/triggermesh/filter/pkg/reconciler/config"
-	svcinformer "knative.dev/pkg/client/injection/kube/informers/core/v1/service"
 )
 
 type FilterService struct {

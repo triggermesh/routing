@@ -21,13 +21,14 @@ import (
 	"log"
 
 	"github.com/kelseyhightower/envconfig"
-	"github.com/triggermesh/filter/pkg/reconciler/config"
-	"github.com/triggermesh/filter/pkg/reconciler/controller"
 	"go.uber.org/zap"
 
 	// This defines the shared main for injected controllers.
 	"knative.dev/pkg/injection/sharedmain"
 	"knative.dev/pkg/signals"
+
+	"github.com/triggermesh/filter/pkg/reconciler/config"
+	"github.com/triggermesh/filter/pkg/reconciler/controller"
 )
 
 const (
