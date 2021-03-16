@@ -114,7 +114,7 @@ jobs:
           command: |
             git add overlays
             git commit -m "Update overlays/<< parameters.cluster >>/filter deployments to '${CIRCLE_TAG:-${CIRCLE_SHA1}}'"
-            git push origin main
+            git push origin master
 
   release:
     executor:
