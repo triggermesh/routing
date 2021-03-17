@@ -57,37 +57,39 @@ func parseExpressionString(expression string) (string, []Variable, error) {
 	for i := 0; i < len(expression); i++ {
 		expression = expression[i:]
 
-		start := strings.Index(expression, "$")
-
-		if start == -1 {
-			cleanExpr = fmt.Sprintf("%s%s", cleanExpr, expression)
+		variable := strings.Index(expression, "$")
+		if variable == -1 {
+			cleanExpr += expression
 			break
 		}
 
 		// start looking for the variable type after the variable name
-		typ := strings.Index(expression[start:], ".(")
+		typ := strings.Index(expression[variable:], ".(")
 		if typ == -1 {
 			return "", []Variable{}, errVarType
 		}
-		typ += start
+		typ += variable
 
-		end := strings.Index(expression[start:], ")")
+		end := strings.Index(expression[variable:], ")")
 		if end == -1 {
 			return "", []Variable{}, errVarType
 		}
-		end += start
+		end += variable
 
 		i = end
-		cleanExpr = fmt.Sprintf("%s%s", cleanExpr, expression[:start])
+		cleanExpr += expression[:variable]
 
-		safeCELName := strings.ReplaceAll(expression[start+1:typ], ".", "_")
+		safeCELName := strings.ReplaceAll(expression[variable+1:typ], ".", "_")
+		// integer as the variable name first symbol causes issue with matching
+		// var types. String prefix ensures that we don't have first integer symbol.
+		safeCELName = "var_" + safeCELName
 
 		vars = append(vars, Variable{
 			Name: safeCELName,
-			Path: expression[start+1 : typ],
+			Path: expression[variable+1 : typ],
 			Type: expression[typ+2 : end],
 		})
-		cleanExpr = fmt.Sprintf("%s%s", cleanExpr, safeCELName)
+		cleanExpr += safeCELName
 	}
 	return cleanExpr, vars, nil
 }
