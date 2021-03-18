@@ -79,12 +79,6 @@ A custom resource of kind `Filter` can now be created, check a
 
 ## Performance
 
-+-----------+  +-----------+  +------------+
-|           |  |           |  |            |
-| Vegeta    +--> Filter    +--> Receiver   |
-|           |  |           |  |            |
-+-----------+  +-----------+  +------------+
-
 The test environment consisted of three components -
 [load ramping](https://github.com/triggermesh/test-infra/tree/main/perf/load-ramping)
 tool based on Vegeta, Filter object and CE
