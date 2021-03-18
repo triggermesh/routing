@@ -1,4 +1,5 @@
 # Top level files and directories
+/.assets/
 /.circleci/
 /.git/
 /test/
