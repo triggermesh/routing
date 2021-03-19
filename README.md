@@ -24,10 +24,12 @@ CE data
 
 Possible expression
 ```
-($id.first.(int64) + $id.second.(int64) >= 8) || $foo.(string) == "bar" && $options.0.(bool) == true 
+($id.first.(int64) + $id.second.(int64) >= 8) || $foo.(string) == "bar" &&
+$options.0.(bool) == true
 ```
 
-The expression variables are defined as `$.<json path>.(type)`, where "type" can be any of the following:
+The expression variables are defined as `$.<json path>.(type)`, where "type" can
+be any of the following:
 - bool
 - int64
 - uint64
@@ -56,7 +58,8 @@ spec:
 
 ## Installation
 
-Filter can be compiled and deployed from source with [ko](https://github.com/google/ko):
+Filter can be compiled and deployed from source with
+[ko](https://github.com/google/ko):
 
 ```
 ko apply -f ./config
@@ -76,17 +79,102 @@ A custom resource of kind `Filter` can now be created, check a
 
 ## Performance
 
-TBD
+The test environment consisted of three components -
+[load ramping](https://github.com/triggermesh/test-infra/tree/main/perf/load-ramping)
+tool based on Vegeta, Filter object and CE
+[receiver](https://github.com/triggermesh/test-infra/tree/main/perf/thrpt-receiver).
+Each of these components were configured to run on dedicated `n1-standard-4`
+compute node (4 vCPUs, 15Gb RAM).
+
+The load ramping script was configured to run a succession of attacks at
+different rates in periods of 5s, ranging from 1 event/sec to 79,432 events/sec
+(theoretical), with a payload of 2 KiB.
+
+Filter expression that was used in the test has three concatenated conditions,
+only one of which matches the test
+[payload](https://github.com/triggermesh/test-infra/blob/660fda78e08edbf1b3a2034777a69f2f72590cfb/perf/load-ramping/sample-ce-data.json):
+
+```
+($id.first.(int64) + $id.second.(int64) >= 8) || $company.(string) == "bar" ||
+$0.name.first.(string) == "Jo"
+```
+
+Important note regarding Filter resource: the service that actually applies
+filtering conditions is multi-tenant, which means that requests to the user's
+Filter objects are handled by the pod in the system namespace (`triggermesh` in
+our case). This implies that Filter performance described below will be shared
+across all Filter users. If we want to get more CE throughput - both vertical
+and horizontal scaling can help us achieve this.
+
+### Results
+
+The receiver service statistics showed that the test environment could normally
+sustain the load of around 8 000 events per second:
+
+![receiver status](./.assets/receiver-stats.png)
+
+At the attack rates close to 10 000 events per second, Filter service starts to
+receive events delivery timeouts. Vegeta report also shows that the load rate
+close to 10 000 events per second is the borderline between the acceptable 100ms
+per request and unpredictable 1s+. Further increase in load causes the spikes in
+the delivery time up to 10 seconds per request which eventually triggers
+Receiver to stop the serving:
+
+![vegeta status](./.assets/vegeta-stats.png)
+
+Prometheus monitoring data doesn't clearly point to the setup bottleneck: 
+
+<details><summary>Filer pod CPU, Memory, Network usage</summary>
+<p>
+
+![filter CPU and memory](./.assets/prom-filter-cpu-mem.png)
+![filter Network](./.assets/prom-filter-svc-net.png)
+
+</p>
+</details>
+
+<details><summary>Vegeta pod CPU, Memory usage</summary>
+<p>
+
+![vegeta CPU and memory](./.assets/prom-vegeta-cpu-mem.png)
+
+</p>
+</details>
+
+
+<details><summary>Rceiver pod CPU, Memory usage</summary>
+<p>
+
+![receiver CPU and memory](./.assets/prom-rcvr-cpu-mem.png)
+
+</p>
+</details>
+
+
+Although these resource usage numbers are a bit higher if they are being
+collected in real-time from the system tools (e.g. `top`), there is no obvious
+reason that may limit Filter performance. Sometimes Filter pod starts to receive
+delivery timeouts and its liveness probe starts to fail, in other cases Receiver
+pod is OOMKilled, etc. <i>As far as the current performance fits our
+expectations, we can leave deeper digging and possible optimizations for
+later.</i>
 
 ## Support
 
-We would love your feedback and help on these sources, so don't hesitate to let us know what is wrong and how we could improve them, just file an [issue](https://github.com/triggermesh/filter/issues/new) or join those of use who are maintaining them and submit a [PR](https://github.com/triggermesh/filter/compare)
+We would love your feedback and help on these sources, so don't hesitate to let
+us know what is wrong and how we could improve them, just file an
+[issue](https://github.com/triggermesh/filter/issues/new) or join those of use
+who are maintaining them and submit a
+[PR](https://github.com/triggermesh/filter/compare)
 
 ## Commercial Support
 
-TriggerMesh Inc supports this project commercially, email info@triggermesh.com to get more details.
+TriggerMesh Inc supports this project commercially, email info@triggermesh.com
+to get more details.
 
 ## Code of Conduct
 
-This plugin is by no means part of [CNCF](https://www.cncf.io/) but we abide by its [code of conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md)
+This plugin is by no means part of [CNCF](https://www.cncf.io/) but we abide by
+its
+[code of conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md)
 
