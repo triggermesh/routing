@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package controller
+package filter
 
 import (
 	"context"
@@ -30,8 +30,8 @@ import (
 	"knative.dev/pkg/resolver"
 	"knative.dev/pkg/tracker"
 
-	filterv1alpha1 "github.com/triggermesh/filter/pkg/apis/filter/v1alpha1"
-	filterreconciler "github.com/triggermesh/filter/pkg/client/generated/injection/reconciler/filter/v1alpha1/filter"
+	filterv1alpha1 "github.com/triggermesh/routing/pkg/apis/filter/v1alpha1"
+	filterreconciler "github.com/triggermesh/routing/pkg/client/generated/injection/reconciler/filter/v1alpha1/filter"
 )
 
 const (

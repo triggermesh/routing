@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2020 TriggerMesh Inc.
+Copyright (c) 2021 TriggerMesh Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import (
 	fmt "fmt"
 	reflect "reflect"
 
-	v1alpha1 "github.com/triggermesh/filter/pkg/apis/filter/v1alpha1"
-	internalclientset "github.com/triggermesh/filter/pkg/client/generated/clientset/internalclientset"
-	filterv1alpha1 "github.com/triggermesh/filter/pkg/client/generated/listers/filter/v1alpha1"
+	v1alpha1 "github.com/triggermesh/routing/pkg/apis/filter/v1alpha1"
+	internalclientset "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset"
+	filterv1alpha1 "github.com/triggermesh/routing/pkg/client/generated/listers/filter/v1alpha1"
 	zap "go.uber.org/zap"
 	v1 "k8s.io/api/core/v1"
 	equality "k8s.io/apimachinery/pkg/api/equality"

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2020 TriggerMesh Inc.
+Copyright (c) 2021 TriggerMesh Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ package internalclientset
 import (
 	"fmt"
 
-	routingv1alpha1 "github.com/triggermesh/filter/pkg/client/generated/clientset/internalclientset/typed/filter/v1alpha1"
+	routingv1alpha1 "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset/typed/filter/v1alpha1"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"

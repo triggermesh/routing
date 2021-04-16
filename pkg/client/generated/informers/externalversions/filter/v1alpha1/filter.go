@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2020 TriggerMesh Inc.
+Copyright (c) 2021 TriggerMesh Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ import (
 	"context"
 	time "time"
 
-	filterv1alpha1 "github.com/triggermesh/filter/pkg/apis/filter/v1alpha1"
-	internalclientset "github.com/triggermesh/filter/pkg/client/generated/clientset/internalclientset"
-	internalinterfaces "github.com/triggermesh/filter/pkg/client/generated/informers/externalversions/internalinterfaces"
-	v1alpha1 "github.com/triggermesh/filter/pkg/client/generated/listers/filter/v1alpha1"
+	filterv1alpha1 "github.com/triggermesh/routing/pkg/apis/filter/v1alpha1"
+	internalclientset "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset"
+	internalinterfaces "github.com/triggermesh/routing/pkg/client/generated/informers/externalversions/internalinterfaces"
+	v1alpha1 "github.com/triggermesh/routing/pkg/client/generated/listers/filter/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"

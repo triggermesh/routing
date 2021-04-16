@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2020 TriggerMesh Inc.
+Copyright (c) 2021 TriggerMesh Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ package internalinterfaces
 import (
 	time "time"
 
-	internalclientset "github.com/triggermesh/filter/pkg/client/generated/clientset/internalclientset"
+	internalclientset "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	cache "k8s.io/client-go/tools/cache"

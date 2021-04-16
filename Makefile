@@ -1,6 +1,6 @@
-KREPO              = filter
-KREPO_DESC         = Triggermesh Filter
-COMMANDS           = filter-controller filter-deployment filter-webhook
+KREPO              = routing
+KREPO_DESC         = Triggermesh Routing
+COMMANDS           = routing-controller routing-webhook filter-deployment
 
 TARGETS           ?= linux/amd64
 

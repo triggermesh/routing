@@ -1,4 +1,4 @@
-module github.com/triggermesh/filter
+module github.com/triggermesh/routing
 
 go 1.15
 

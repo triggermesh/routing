@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2020 TriggerMesh Inc.
+Copyright (c) 2021 TriggerMesh Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ package filter
 import (
 	context "context"
 
-	v1alpha1 "github.com/triggermesh/filter/pkg/client/generated/informers/externalversions/filter/v1alpha1"
-	factory "github.com/triggermesh/filter/pkg/client/generated/injection/informers/factory"
+	v1alpha1 "github.com/triggermesh/routing/pkg/client/generated/informers/externalversions/filter/v1alpha1"
+	factory "github.com/triggermesh/routing/pkg/client/generated/injection/informers/factory"
 	controller "knative.dev/pkg/controller"
 	injection "knative.dev/pkg/injection"
 	logging "knative.dev/pkg/logging"
@@ -46,7 +46,7 @@ func Get(ctx context.Context) v1alpha1.FilterInformer {
 	untyped := ctx.Value(Key{})
 	if untyped == nil {
 		logging.FromContext(ctx).Panic(
-			"Unable to fetch github.com/triggermesh/filter/pkg/client/generated/informers/externalversions/filter/v1alpha1.FilterInformer from context.")
+			"Unable to fetch github.com/triggermesh/routing/pkg/client/generated/informers/externalversions/filter/v1alpha1.FilterInformer from context.")
 	}
 	return untyped.(v1alpha1.FilterInformer)
 }
