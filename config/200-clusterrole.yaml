@@ -111,6 +111,28 @@ rules:
     - list
     - watch
 ---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: triggermesh-splitter-deployment
+rules:
+  - apiGroups: 
+    - ""
+    resources:
+    - configmaps
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - routing.triggermesh.io
+    resources:
+    - splitters
+    verbs:
+    - get
+    - list
+    - watch
+---
 # Use this aggregated ClusterRole when you need readonly access to "Addressables"
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -127,7 +149,7 @@ rules: [] # Rules are automatically filled in by the controller manager.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: filter-addressable-resolver
+  name: routing-addressable-resolver
   labels:
     duck.knative.dev/addressable: "true"
 rules:
@@ -136,6 +158,8 @@ rules:
   resources:
   - filters
   - filters/status
+  - splitters
+  - splitters/status
   verbs:
   - get
   - list

@@ -19,7 +19,7 @@ limitations under the License.
 package fake
 
 import (
-	routingv1alpha1 "github.com/triggermesh/routing/pkg/apis/filter/v1alpha1"
+	routingv1alpha1 "github.com/triggermesh/routing/pkg/apis/routing/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"

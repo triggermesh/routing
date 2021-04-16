@@ -29,7 +29,7 @@ import (
 	"knative.dev/pkg/webhook/resourcesemantics"
 	"knative.dev/pkg/webhook/resourcesemantics/validation"
 
-	"github.com/triggermesh/routing/pkg/apis/filter/v1alpha1"
+	"github.com/triggermesh/routing/pkg/apis/routing/v1alpha1"
 )
 
 var types = map[schema.GroupVersionKind]resourcesemantics.GenericCRD{
@@ -39,7 +39,7 @@ var types = map[schema.GroupVersionKind]resourcesemantics.GenericCRD{
 
 var callbacks = map[schema.GroupVersionKind]validation.Callback{}
 
-func NewValidationAdmissionController(ctx context.Context, cmw configmap.Watcher) *controller.Impl {
+func NewFilterValidationAdmissionController(ctx context.Context, cmw configmap.Watcher) *controller.Impl {
 	return validation.NewAdmissionController(ctx,
 
 		// Name of the resource webhook.
@@ -77,6 +77,6 @@ func main() {
 
 	sharedmain.WebhookMainWithContext(ctx, webhook.NameFromEnv(),
 		certificates.NewController,
-		NewValidationAdmissionController,
+		NewFilterValidationAdmissionController,
 	)
 }

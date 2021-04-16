@@ -7,7 +7,7 @@ PKG := github.com/triggermesh/routing
 
 # List of API groups to generate code for
 # e.g. "filter/v1alpha1 filter/v1alpha2"
-API_GROUPS := filter/v1alpha1
+API_GROUPS := routing/v1alpha1
 # generates e.g. "PKG/pkg/apis/router/v1alpha1 PKG/pkg/apis/router/v1alpha2"
 api-import-paths := $(foreach group,$(API_GROUPS),$(PKG)/pkg/apis/$(group))
 

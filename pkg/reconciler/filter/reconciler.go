@@ -30,8 +30,8 @@ import (
 	"knative.dev/pkg/resolver"
 	"knative.dev/pkg/tracker"
 
-	filterv1alpha1 "github.com/triggermesh/routing/pkg/apis/filter/v1alpha1"
-	filterreconciler "github.com/triggermesh/routing/pkg/client/generated/injection/reconciler/filter/v1alpha1/filter"
+	routingv1alpha1 "github.com/triggermesh/routing/pkg/apis/routing/v1alpha1"
+	filterreconciler "github.com/triggermesh/routing/pkg/client/generated/injection/reconciler/routing/v1alpha1/filter"
 )
 
 const (
@@ -50,14 +50,14 @@ type Reconciler struct {
 
 	sinkResolver *resolver.URIResolver
 
-	Filter FilterService
+	Filter FilterEnv
 }
 
 // Check that our Reconciler implements Interface
 var _ filterreconciler.Interface = (*Reconciler)(nil)
 
 // ReconcileKind implements Interface.ReconcileKind.
-func (r *Reconciler) ReconcileKind(ctx context.Context, o *filterv1alpha1.Filter) reconciler.Event {
+func (r *Reconciler) ReconcileKind(ctx context.Context, o *routingv1alpha1.Filter) reconciler.Event {
 	logger := logging.FromContext(ctx)
 
 	if err := r.Tracker.TrackReference(tracker.Reference{

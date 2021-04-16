@@ -24,8 +24,8 @@ import (
 	time "time"
 
 	internalclientset "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset"
-	filter "github.com/triggermesh/routing/pkg/client/generated/informers/externalversions/filter"
 	internalinterfaces "github.com/triggermesh/routing/pkg/client/generated/informers/externalversions/internalinterfaces"
+	routing "github.com/triggermesh/routing/pkg/client/generated/informers/externalversions/routing"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -172,9 +172,9 @@ type SharedInformerFactory interface {
 	ForResource(resource schema.GroupVersionResource) (GenericInformer, error)
 	WaitForCacheSync(stopCh <-chan struct{}) map[reflect.Type]bool
 
-	Routing() filter.Interface
+	Routing() routing.Interface
 }
 
-func (f *sharedInformerFactory) Routing() filter.Interface {
-	return filter.New(f, f.namespace, f.tweakListOptions)
+func (f *sharedInformerFactory) Routing() routing.Interface {
+	return routing.New(f, f.namespace, f.tweakListOptions)
 }

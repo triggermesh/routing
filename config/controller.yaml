@@ -65,12 +65,14 @@ spec:
           value: config-observability
         - name: METRICS_DOMAIN
           value: triggermesh.io/routing
-        - name: FILTER_NAMESPACE
+        - name: ROUTING_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
         - name: FILTER_SERVICE
           value: filter-service
+        - name: SPLITTER_SERVICE
+          value: splitter-service
 
         securityContext:
           allowPrivilegeEscalation: false

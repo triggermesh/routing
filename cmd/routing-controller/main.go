@@ -18,17 +18,12 @@ package main
 
 import (
 	// The set of controllers this controller process runs.
-	"log"
-
-	"github.com/kelseyhightower/envconfig"
-	"go.uber.org/zap"
 
 	// This defines the shared main for injected controllers.
 	"knative.dev/pkg/injection/sharedmain"
-	"knative.dev/pkg/signals"
 
-	"github.com/triggermesh/routing/pkg/reconciler/config"
 	"github.com/triggermesh/routing/pkg/reconciler/filter"
+	"github.com/triggermesh/routing/pkg/reconciler/splitter"
 )
 
 const (
@@ -36,12 +31,8 @@ const (
 )
 
 func main() {
-	var filterEnv filter.FilterService
-	if err := envconfig.Process("", &filterEnv); err != nil {
-		log.Fatal("Failed to process env var", zap.Error(err))
-	}
-
-	ctx := signals.NewContext()
-	sharedmain.MainWithContext(config.WithFilterService(ctx, filterEnv),
-		component, filter.New)
+	sharedmain.Main(component,
+		filter.New,
+		splitter.New,
+	)
 }
