@@ -1,4 +1,10 @@
-# Triggermesh Content Filter
+# Triggermesh Routing
+
+Triggermesh Routing repository contains Kubernetes Custom Resources that are
+responsible for events routing inside the Triggermesh Bridges. Currently, there
+are two components available for routing purposes: Filter and Splitter.
+
+## Triggermesh Content Filter
 
 Triggermesh Content Filter is an addressable Kubernetes object that filters
 incoming CloudEvents according to the provided expression. Filter's
@@ -56,28 +62,7 @@ spec:
 `id.first` and `id.second` paths and the sum of their values is equal to 8.</i>
 
 
-## Installation
-
-Filter can be compiled and deployed from source with
-[ko](https://github.com/google/ko):
-
-```
-ko apply -f ./config
-```
-
-You can verify that it's installed by checking that the controller is running:
-
-```
-$ kubectl -n filter get pods -l app=filter-controller
-NAME                                 READY   STATUS    RESTARTS   AGE
-filter-controller-6ff9bfb568-8w977   1/1     Running   0          2m
-```
-
-A custom resource of kind `Filter` can now be created, check a
-[sample](config/samples/filter.yaml).
-
-
-## Performance
+### Filter Performance
 
 The test environment consisted of three components -
 [load ramping](https://github.com/triggermesh/test-infra/tree/main/perf/load-ramping)
@@ -106,7 +91,7 @@ our case). This implies that Filter performance described below will be shared
 across all Filter users. If we want to get more CE throughput - both vertical
 and horizontal scaling can help us achieve this.
 
-### Results
+#### Results
 
 The receiver service statistics showed that the test environment could normally
 sustain the load of around 8 000 events per second:
@@ -158,6 +143,51 @@ delivery timeouts and its liveness probe starts to fail, in other cases Receiver
 pod is OOMKilled, etc. <i>As far as the current performance fits our
 expectations, we can leave deeper digging and possible optimizations for
 later.</i>
+
+## Triggermesh Events Splitter
+
+Triggermesh Splitter is a simple Custom Resource that can split arrays inside an
+event and produce multiple CloudEvents that will consist of array items.
+
+```
+spec:
+  path: items
+  ceContext:
+    type: foo.bar.type
+    source: splitter
+    extensions:
+      key1: value1
+      key2: value2
+  sink: 
+```
+
+Splitter's specification contains following fields:
+- path - JSON path in CloudEvent payload where array is expected
+- ceContext - CloudEvent context data to override the original event context
+- sink - destination to forward resulting events
+
+## Installation
+
+Routing can be compiled and deployed from source with
+[ko](https://github.com/google/ko):
+
+```
+ko apply -f ./config
+```
+
+You can verify that it's installed by checking that the controller is running:
+
+```
+$ kubectl -n routing get pods
+NAME                                  READY   STATUS    RESTARTS   AGE
+filter-service-77b469cf64-5b2hn       1/1     Running   0          4m30s
+routing-controller-55bfb7b9b7-l82z6   1/1     Running   0          4m31s
+routing-webhook-c8ffc8d88-977f8       1/1     Running   0          4m26s
+splitter-service-9f49c7f88-trb9h      1/1     Running   0          4m28s
+```
+
+A custom resources of kind `Filter` and `Splitter` can now be created, check
+[samples](config/samples) directory.
 
 ## Support
 

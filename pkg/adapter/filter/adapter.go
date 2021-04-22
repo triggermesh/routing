@@ -28,13 +28,12 @@ import (
 	"github.com/cloudevents/sdk-go/v2/event"
 	cehttp "github.com/cloudevents/sdk-go/v2/protocol/http"
 	"go.uber.org/zap"
-	"knative.dev/pkg/logging"
 
 	"knative.dev/eventing/pkg/kncloudevents"
 	"knative.dev/eventing/pkg/utils"
 
-	filterv1alpha1 "github.com/triggermesh/routing/pkg/apis/filter/v1alpha1"
-	filterlisters "github.com/triggermesh/routing/pkg/client/generated/listers/filter/v1alpha1"
+	routingv1alpha1 "github.com/triggermesh/routing/pkg/apis/routing/v1alpha1"
+	routinglisters "github.com/triggermesh/routing/pkg/client/generated/listers/routing/v1alpha1"
 	"github.com/triggermesh/routing/pkg/eventfilter"
 	"github.com/triggermesh/routing/pkg/eventfilter/cel"
 )
@@ -64,7 +63,7 @@ type Handler struct {
 	// reporter reports stats of status code and dispatch time
 	// reporter StatsReporter
 
-	filterLister filterlisters.FilterLister
+	filterLister routinglisters.FilterLister
 	logger       *zap.Logger
 
 	// expressions is the map of trigger refs with precompiled CEL expressions
@@ -74,7 +73,7 @@ type Handler struct {
 
 // NewHandler creates a new Handler and its associated MessageReceiver. The caller is responsible for
 // Start()ing the returned Handler.
-func NewHandler(logger *zap.Logger, filterLister filterlisters.FilterLister, port int) (*Handler, error) {
+func NewHandler(logger *zap.Logger, filterLister routinglisters.FilterLister, port int) (*Handler, error) {
 	kncloudevents.ConfigureConnectionArgs(&kncloudevents.ConnectionArgs{
 		MaxIdleConns:        defaultMaxIdleConnections,
 		MaxIdleConnsPerHost: defaultMaxIdleConnectionsPerHost,
@@ -139,8 +138,6 @@ func (h *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	ctx = logging.WithLogger(ctx, h.logger.Sugar())
-
 	cond, exists := h.expressions.get(f.UID, f.Generation)
 	if !exists {
 		cond, err = cel.CompileExpression(f.Spec.Expression)
@@ -161,7 +158,7 @@ func (h *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	h.send(ctx, writer, request.Header, f.Status.SinkURI.String(), event)
 }
 
-func updateAttributes(fs filterv1alpha1.FilterStatus, event *event.Event) *event.Event {
+func updateAttributes(fs routingv1alpha1.FilterStatus, event *event.Event) *event.Event {
 	if len(fs.CloudEventAttributes) == 1 {
 		event.SetType(fs.CloudEventAttributes[0].Type)
 		event.SetSource(fs.CloudEventAttributes[0].Source)
@@ -262,7 +259,7 @@ func (h *Handler) writeResponse(ctx context.Context, writer http.ResponseWriter,
 	return resp.StatusCode, nil
 }
 
-func (h *Handler) getFilter(ref filterRef) (*filterv1alpha1.Filter, error) {
+func (h *Handler) getFilter(ref filterRef) (*routingv1alpha1.Filter, error) {
 	return h.filterLister.Filters(ref.namespace).Get(ref.name)
 }
 

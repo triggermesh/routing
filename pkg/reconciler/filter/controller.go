@@ -18,6 +18,7 @@ package filter
 
 import (
 	"context"
+	"fmt"
 
 	corev1 "k8s.io/api/core/v1"
 	svcinformer "knative.dev/pkg/client/injection/kube/informers/core/v1/service"
@@ -27,14 +28,14 @@ import (
 	"knative.dev/pkg/resolver"
 	"knative.dev/pkg/tracker"
 
-	filterinformer "github.com/triggermesh/routing/pkg/client/generated/injection/informers/filter/v1alpha1/filter"
-	filterreconciler "github.com/triggermesh/routing/pkg/client/generated/injection/reconciler/filter/v1alpha1/filter"
-	"github.com/triggermesh/routing/pkg/reconciler/config"
+	"github.com/kelseyhightower/envconfig"
+	filterinformer "github.com/triggermesh/routing/pkg/client/generated/injection/informers/routing/v1alpha1/filter"
+	filterreconciler "github.com/triggermesh/routing/pkg/client/generated/injection/reconciler/routing/v1alpha1/filter"
 )
 
-type FilterService struct {
+type FilterEnv struct {
 	Name      string `envconfig:"FILTER_SERVICE" required:"true"`
-	Namespace string `envconfig:"FILTER_NAMESPACE" required:"true"`
+	Namespace string `envconfig:"ROUTING_NAMESPACE" required:"true"`
 }
 
 // New creates a Reconciler and returns the result of NewImpl.
@@ -44,12 +45,17 @@ func New(
 ) *controller.Impl {
 	logger := logging.FromContext(ctx)
 
-	filterInformer := filterinformer.Get(ctx)
+	var env FilterEnv
+	if err := envconfig.Process("", &env); err != nil {
+		panic(fmt.Sprintf("Failed to process Filter env: %v", err))
+	}
+
+	routingInformer := filterinformer.Get(ctx)
 	svcInformer := svcinformer.Get(ctx)
 
 	r := &Reconciler{
 		ServiceLister: svcInformer.Lister(),
-		Filter:        config.GetFilterService(ctx).(FilterService),
+		Filter:        env,
 	}
 
 	impl := filterreconciler.NewImpl(ctx, r)
@@ -59,7 +65,7 @@ func New(
 
 	logger.Info("Setting up event handlers.")
 
-	filterInformer.Informer().AddEventHandler(controller.HandleAll(impl.Enqueue))
+	routingInformer.Informer().AddEventHandler(controller.HandleAll(impl.Enqueue))
 
 	svcInformer.Informer().AddEventHandler(controller.HandleAll(
 		// Call the tracker's OnChanged method, but we've seen the objects
