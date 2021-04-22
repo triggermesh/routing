@@ -21,8 +21,8 @@ webhooks:
   - v1beta1
   clientConfig:
     service:
-      name: filter-webhook
-      namespace: filter
+      name: routing-webhook
+      namespace: routing
   sideEffects: None
   failurePolicy: Fail
   name: validation.webhook.routing.triggermesh.io
@@ -30,6 +30,6 @@ webhooks:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: filter-webhook-certs
-  namespace: filter
+  name: routing-webhook-certs
+  namespace: routing
 # The data is populated at install time.

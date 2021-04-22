@@ -15,19 +15,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: filter-webhook
-  namespace: filter
+  name: routing-webhook
+  namespace: routing
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: filter-webhook
-      role: filter-webhook
+      app: routing-webhook
+      role: routing-webhook
   template:
     metadata:
       labels:
-        app: filter-webhook
-        role: filter-webhook
+        app: routing-webhook
+        role: routing-webhook
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -36,16 +36,16 @@ spec:
           - podAffinityTerm:
               labelSelector:
                 matchLabels:
-                  app: filter-webhook
+                  app: routing-webhook
               topologyKey: kubernetes.io/hostname
             weight: 100
 
-      serviceAccountName: triggermesh-filter-controller
+      serviceAccountName: triggermesh-routing-controller
       containers:
       - name: webhook
         # This is the Go import path for the binary that is containerized
         # and substituted here.
-        image: ko://github.com/triggermesh/filter/cmd/filter-webhook
+        image: ko://github.com/triggermesh/routing/cmd/routing-webhook
         resources:
           requests:
             cpu: 20m
@@ -63,7 +63,7 @@ spec:
         - name: METRICS_DOMAIN
           value: triggermesh.io/routing
         - name: WEBHOOK_NAME
-          value: filter-webhook
+          value: routing-webhook
         - name: WEBHOOK_PORT
           value: "8443"
 
@@ -82,7 +82,7 @@ spec:
             port: 8443
             httpHeaders:
             - name: k-kubelet-probe
-              value: "filter-webhook"
+              value: "routing-webhook"
         livenessProbe: *probe
 
       # Our webhook should gracefully terminate by lame ducking first, set this to a sufficiently

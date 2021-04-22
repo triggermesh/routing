@@ -32,10 +32,10 @@ import (
 	"knative.dev/pkg/signals"
 	"knative.dev/pkg/system"
 
-	filterv1alpha1 "github.com/triggermesh/filter/pkg/client/generated/clientset/internalclientset"
-	filterinformers "github.com/triggermesh/filter/pkg/client/generated/informers/externalversions"
-	"github.com/triggermesh/filter/pkg/reconciler/config"
-	"github.com/triggermesh/filter/pkg/reconciler/filter"
+	"github.com/triggermesh/routing/pkg/adapter/filter"
+	clientset "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset"
+	informers "github.com/triggermesh/routing/pkg/client/generated/informers/externalversions"
+	"github.com/triggermesh/routing/pkg/reconciler/config"
 )
 
 const (
@@ -45,10 +45,7 @@ const (
 
 type envConfig struct {
 	Namespace string `envconfig:"NAMESPACE" required:"true"`
-	// TODO: change this environment variable to something like "PodGroupName".
-	PodName       string `envconfig:"POD_NAME" required:"true"`
-	ContainerName string `envconfig:"CONTAINER_NAME" required:"true"`
-	Port          int    `envconfig:"FILTER_PORT" default:"8080"`
+	Port      int    `envconfig:"FILTER_PORT" default:"8080"`
 }
 
 func main() {
@@ -77,9 +74,9 @@ func main() {
 
 	logger.Info("Starting the Filter")
 
-	filterClient := filterv1alpha1.NewForConfigOrDie(cfg)
-	filterFactory := filterinformers.NewSharedInformerFactory(filterClient, controller.GetResyncPeriod(ctx))
-	filterInformer := filterFactory.Routing().V1alpha1().Filters()
+	routingClient := clientset.NewForConfigOrDie(cfg)
+	routingFactory := informers.NewSharedInformerFactory(routingClient, controller.GetResyncPeriod(ctx))
+	filterInformer := routingFactory.Routing().V1alpha1().Filters()
 
 	// Watch the logging config map and dynamically update logging levels.
 	configMapWatcher := configmap.NewInformedWatcher(kubeClient, system.Namespace())
@@ -96,8 +93,6 @@ func main() {
 	// Watch the observability config map and dynamically update request logs.
 	configMapWatcher.Watch(logging.ConfigMapName(), logging.UpdateLevelFromConfigMap(sl, atomicLevel, component))
 
-	// reporter := filter.NewStatsReporter(env.ContainerName, kmeta.ChildName(env.PodName, uuid.New().String()))
-
 	// We are running both the receiver (takes messages in from the Broker) and the dispatcher (send
 	// the messages to the triggers' subscribers) in this binary.
 	handler, err := filter.NewHandler(logger, filterInformer.Lister(), env.Port)
@@ -113,8 +108,8 @@ func main() {
 	// Start all of the informers and wait for them to sync.
 	logger.Info("Starting informer.")
 
-	go filterFactory.Start(ctx.Done())
-	filterFactory.WaitForCacheSync(ctx.Done())
+	go routingFactory.Start(ctx.Done())
+	routingFactory.WaitForCacheSync(ctx.Done())
 
 	// Start blocks forever.
 	logger.Info("Filter starting...")

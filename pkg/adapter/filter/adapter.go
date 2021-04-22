@@ -33,10 +33,10 @@ import (
 	"knative.dev/eventing/pkg/kncloudevents"
 	"knative.dev/eventing/pkg/utils"
 
-	filterv1alpha1 "github.com/triggermesh/filter/pkg/apis/filter/v1alpha1"
-	filterlisters "github.com/triggermesh/filter/pkg/client/generated/listers/filter/v1alpha1"
-	"github.com/triggermesh/filter/pkg/eventfilter"
-	"github.com/triggermesh/filter/pkg/eventfilter/cel"
+	filterv1alpha1 "github.com/triggermesh/routing/pkg/apis/filter/v1alpha1"
+	filterlisters "github.com/triggermesh/routing/pkg/client/generated/listers/filter/v1alpha1"
+	"github.com/triggermesh/routing/pkg/eventfilter"
+	"github.com/triggermesh/routing/pkg/eventfilter/cel"
 )
 
 const (

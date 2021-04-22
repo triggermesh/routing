@@ -3,7 +3,7 @@
 # see https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api_changes.md#generate-code
 
 # Name of the Go package for this repository
-PKG := github.com/triggermesh/filter
+PKG := github.com/triggermesh/routing
 
 # List of API groups to generate code for
 # e.g. "filter/v1alpha1 filter/v1alpha2"

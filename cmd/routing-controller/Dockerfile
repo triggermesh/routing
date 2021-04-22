@@ -4,13 +4,13 @@ ENV CGO_ENABLED 0
 ENV GOOS linux
 ENV GOARCH amd64
 
-WORKDIR /go/src/filter-webhook
+WORKDIR /go/src/routing-controller
 
 COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-RUN BIN_OUTPUT_DIR=/bin make filter-webhook && \
+RUN BIN_OUTPUT_DIR=/bin make routing-controller && \
     mkdir /kodata && \
     ls -lah hack && \
     mv .git/* /kodata/ && \
@@ -20,7 +20,7 @@ RUN BIN_OUTPUT_DIR=/bin make filter-webhook && \
 FROM scratch
 
 COPY --from=builder /kodata/ ${KO_DATA_PATH}/
-COPY --from=builder /bin/filter-webhook /
+COPY --from=builder /bin/routing-controller /
 COPY licenses/ /licenses/
 
-ENTRYPOINT ["/filter-webhook"]
+ENTRYPOINT ["/routing-controller"]

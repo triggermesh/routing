@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2020 TriggerMesh Inc.
+Copyright (c) 2021 TriggerMesh Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ package client
 import (
 	context "context"
 
-	internalclientset "github.com/triggermesh/filter/pkg/client/generated/clientset/internalclientset"
+	internalclientset "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset"
 	rest "k8s.io/client-go/rest"
 	injection "knative.dev/pkg/injection"
 	logging "knative.dev/pkg/logging"
@@ -44,10 +44,10 @@ func Get(ctx context.Context) internalclientset.Interface {
 	if untyped == nil {
 		if injection.GetConfig(ctx) == nil {
 			logging.FromContext(ctx).Panic(
-				"Unable to fetch github.com/triggermesh/filter/pkg/client/generated/clientset/internalclientset.Interface from context. This context is not the application context (which is typically given to constructors via sharedmain).")
+				"Unable to fetch github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset.Interface from context. This context is not the application context (which is typically given to constructors via sharedmain).")
 		} else {
 			logging.FromContext(ctx).Panic(
-				"Unable to fetch github.com/triggermesh/filter/pkg/client/generated/clientset/internalclientset.Interface from context.")
+				"Unable to fetch github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset.Interface from context.")
 		}
 	}
 	return untyped.(internalclientset.Interface)

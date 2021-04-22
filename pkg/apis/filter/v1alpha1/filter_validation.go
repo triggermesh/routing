@@ -22,7 +22,7 @@ import (
 
 	"knative.dev/pkg/apis"
 
-	"github.com/triggermesh/filter/pkg/eventfilter/cel"
+	"github.com/triggermesh/routing/pkg/eventfilter/cel"
 )
 
 // Validate implements apis.Validatable

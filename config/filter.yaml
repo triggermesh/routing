@@ -16,7 +16,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: filter-service
-  namespace: filter
+  namespace: routing
 spec:
   selector:
     matchLabels:
@@ -31,7 +31,7 @@ spec:
       containers:
       - name: filter
         terminationMessagePolicy: FallbackToLogsOnError
-        image: ko://github.com/triggermesh/filter/cmd/filter-deployment
+        image: ko://github.com/triggermesh/routing/cmd/filter-deployment
         readinessProbe: &probe
           failureThreshold: 3
           httpGet:
@@ -90,7 +90,7 @@ metadata:
   labels:
     routing.triggermesh.io/role: filter
   name: filter-service
-  namespace: filter
+  namespace: routing
 spec:
   ports:
     - name: http

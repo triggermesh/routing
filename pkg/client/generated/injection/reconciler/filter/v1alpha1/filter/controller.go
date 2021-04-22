@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2020 TriggerMesh Inc.
+Copyright (c) 2021 TriggerMesh Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import (
 	reflect "reflect"
 	strings "strings"
 
-	internalclientsetscheme "github.com/triggermesh/filter/pkg/client/generated/clientset/internalclientset/scheme"
-	client "github.com/triggermesh/filter/pkg/client/generated/injection/client"
-	filter "github.com/triggermesh/filter/pkg/client/generated/injection/informers/filter/v1alpha1/filter"
+	internalclientsetscheme "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset/scheme"
+	client "github.com/triggermesh/routing/pkg/client/generated/injection/client"
+	filter "github.com/triggermesh/routing/pkg/client/generated/injection/informers/filter/v1alpha1/filter"
 	zap "go.uber.org/zap"
 	corev1 "k8s.io/api/core/v1"
 	labels "k8s.io/apimachinery/pkg/labels"

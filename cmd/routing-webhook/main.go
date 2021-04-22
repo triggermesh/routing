@@ -29,7 +29,7 @@ import (
 	"knative.dev/pkg/webhook/resourcesemantics"
 	"knative.dev/pkg/webhook/resourcesemantics/validation"
 
-	"github.com/triggermesh/filter/pkg/apis/filter/v1alpha1"
+	"github.com/triggermesh/routing/pkg/apis/filter/v1alpha1"
 )
 
 var types = map[schema.GroupVersionKind]resourcesemantics.GenericCRD{
@@ -72,7 +72,7 @@ func main() {
 		ServiceName: webhook.NameFromEnv(),
 		Port:        webhook.PortFromEnv(8443),
 		// SecretName must match the name of the Secret created in the configuration.
-		SecretName: "filter-webhook-certs",
+		SecretName: "routing-webhook-certs",
 	})
 
 	sharedmain.WebhookMainWithContext(ctx, webhook.NameFromEnv(),

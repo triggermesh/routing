@@ -27,21 +27,21 @@ import (
 	"knative.dev/pkg/injection/sharedmain"
 	"knative.dev/pkg/signals"
 
-	"github.com/triggermesh/filter/pkg/reconciler/config"
-	"github.com/triggermesh/filter/pkg/reconciler/controller"
+	"github.com/triggermesh/routing/pkg/reconciler/config"
+	"github.com/triggermesh/routing/pkg/reconciler/filter"
 )
 
 const (
-	component = "filter-service"
+	component = "routing-service"
 )
 
 func main() {
-	var filterEnv controller.FilterService
+	var filterEnv filter.FilterService
 	if err := envconfig.Process("", &filterEnv); err != nil {
 		log.Fatal("Failed to process env var", zap.Error(err))
 	}
 
 	ctx := signals.NewContext()
 	sharedmain.MainWithContext(config.WithFilterService(ctx, filterEnv),
-		component, controller.New)
+		component, filter.New)
 }

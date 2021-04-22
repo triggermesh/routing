@@ -23,7 +23,7 @@ import (
 	"github.com/google/cel-go/cel"
 	"github.com/tidwall/gjson"
 
-	"github.com/triggermesh/filter/pkg/eventfilter"
+	"github.com/triggermesh/routing/pkg/eventfilter"
 )
 
 // ConditionalFilter structure holds both CEL Program and variable definitions

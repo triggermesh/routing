@@ -19,7 +19,7 @@ package filter
 import (
 	"sync"
 
-	"github.com/triggermesh/filter/pkg/eventfilter/cel"
+	"github.com/triggermesh/routing/pkg/eventfilter/cel"
 	"k8s.io/apimachinery/pkg/types"
 )
 

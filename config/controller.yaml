@@ -15,17 +15,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: filter-controller
-  namespace: filter
+  name: routing-controller
+  namespace: routing
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: filter-controller
+      app: routing-controller
   template:
     metadata:
       labels:
-        app: filter-controller
+        app: routing-controller
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -34,16 +34,16 @@ spec:
           - podAffinityTerm:
               labelSelector:
                 matchLabels:
-                  app: filter-controller
+                  app: routing-controller
               topologyKey: kubernetes.io/hostname
             weight: 100
 
-      serviceAccountName: triggermesh-filter-controller
+      serviceAccountName: triggermesh-routing-controller
       containers:
       - name: controller
         # This is the Go import path for the binary that is containerized
         # and substituted here.
-        image: ko://github.com/triggermesh/filter/cmd/filter-controller
+        image: ko://github.com/triggermesh/routing/cmd/routing-controller
         resources:
           requests:
             cpu: 100m

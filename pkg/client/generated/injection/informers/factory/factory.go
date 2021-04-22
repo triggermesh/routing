@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2020 TriggerMesh Inc.
+Copyright (c) 2021 TriggerMesh Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ package factory
 import (
 	context "context"
 
-	externalversions "github.com/triggermesh/filter/pkg/client/generated/informers/externalversions"
-	client "github.com/triggermesh/filter/pkg/client/generated/injection/client"
+	externalversions "github.com/triggermesh/routing/pkg/client/generated/informers/externalversions"
+	client "github.com/triggermesh/routing/pkg/client/generated/injection/client"
 	controller "knative.dev/pkg/controller"
 	injection "knative.dev/pkg/injection"
 	logging "knative.dev/pkg/logging"
@@ -50,7 +50,7 @@ func Get(ctx context.Context) externalversions.SharedInformerFactory {
 	untyped := ctx.Value(Key{})
 	if untyped == nil {
 		logging.FromContext(ctx).Panic(
-			"Unable to fetch github.com/triggermesh/filter/pkg/client/generated/informers/externalversions.SharedInformerFactory from context.")
+			"Unable to fetch github.com/triggermesh/routing/pkg/client/generated/informers/externalversions.SharedInformerFactory from context.")
 	}
 	return untyped.(externalversions.SharedInformerFactory)
 }

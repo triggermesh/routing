@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package controller
+package filter
 
 import (
 	"context"
@@ -27,9 +27,9 @@ import (
 	"knative.dev/pkg/resolver"
 	"knative.dev/pkg/tracker"
 
-	filterinformer "github.com/triggermesh/filter/pkg/client/generated/injection/informers/filter/v1alpha1/filter"
-	filterreconciler "github.com/triggermesh/filter/pkg/client/generated/injection/reconciler/filter/v1alpha1/filter"
-	"github.com/triggermesh/filter/pkg/reconciler/config"
+	filterinformer "github.com/triggermesh/routing/pkg/client/generated/injection/informers/filter/v1alpha1/filter"
+	filterreconciler "github.com/triggermesh/routing/pkg/client/generated/injection/reconciler/filter/v1alpha1/filter"
+	"github.com/triggermesh/routing/pkg/reconciler/config"
 )
 
 type FilterService struct {

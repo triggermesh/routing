@@ -15,19 +15,19 @@
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: triggermesh-filter-admin
+  name: triggermesh-routing-admin
 aggregationRule:
   clusterRoleSelectors:
   - matchLabels:
-      filter.triggermesh.io/controller: "true"
+      routing.triggermesh.io/controller: "true"
 rules: [] # Rules are automatically filled in by the controller manager.
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: triggermesh-filter-core
+  name: triggermesh-routing-core
   labels:
-    filter.triggermesh.io/controller: "true"
+    routing.triggermesh.io/controller: "true"
 rules:
   - apiGroups:
     - ""

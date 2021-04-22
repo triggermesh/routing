@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2020 TriggerMesh Inc.
+Copyright (c) 2021 TriggerMesh Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ limitations under the License.
 package filter
 
 import (
-	v1alpha1 "github.com/triggermesh/filter/pkg/client/generated/informers/externalversions/filter/v1alpha1"
-	internalinterfaces "github.com/triggermesh/filter/pkg/client/generated/informers/externalversions/internalinterfaces"
+	v1alpha1 "github.com/triggermesh/routing/pkg/client/generated/informers/externalversions/filter/v1alpha1"
+	internalinterfaces "github.com/triggermesh/routing/pkg/client/generated/informers/externalversions/internalinterfaces"
 )
 
 // Interface provides access to each of this group's versions.

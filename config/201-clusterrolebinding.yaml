@@ -15,14 +15,14 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: triggermesh-filter-controller-admin
+  name: triggermesh-routing-controller-admin
 subjects:
   - kind: ServiceAccount
-    name: triggermesh-filter-controller
-    namespace: filter
+    name: triggermesh-routing-controller
+    namespace: routing
 roleRef:
   kind: ClusterRole
-  name: triggermesh-filter-admin
+  name: triggermesh-routing-admin
   apiGroup: rbac.authorization.k8s.io
 
 ---
@@ -34,7 +34,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: triggermesh-filter-deployment
-    namespace: filter
+    namespace: routing
 roleRef:
   kind: ClusterRole
   name: triggermesh-filter-deployment
@@ -45,11 +45,11 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: triggermesh-filter-controller-resolver
+  name: triggermesh-routing-controller-resolver
 subjects:
   - kind: ServiceAccount
-    name: triggermesh-filter-controller
-    namespace: filter
+    name: triggermesh-routing-controller
+    namespace: routing
 roleRef:
   kind: ClusterRole
   name: addressable-resolver
