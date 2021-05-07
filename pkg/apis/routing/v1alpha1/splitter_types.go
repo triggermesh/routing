@@ -60,9 +60,9 @@ type SplitterSpec struct {
 }
 
 type CloudEventContext struct {
-	Type       string                 `json:"type"`
-	Source     string                 `json:"source"`
-	Extensions map[string]interface{} `json:"extensions"`
+	Type       string            `json:"type"`
+	Source     string            `json:"source"`
+	Extensions map[string]string `json:"extensions"`
 }
 
 // SplitterStatus communicates the observed state of the Splitter (from the controller).
