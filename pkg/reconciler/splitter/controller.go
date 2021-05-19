@@ -29,8 +29,8 @@ import (
 	"knative.dev/pkg/tracker"
 
 	"github.com/kelseyhightower/envconfig"
-	splitterinformer "github.com/triggermesh/routing/pkg/client/generated/injection/informers/routing/v1alpha1/splitter"
-	splitterreconciler "github.com/triggermesh/routing/pkg/client/generated/injection/reconciler/routing/v1alpha1/splitter"
+	splitterinformer "github.com/triggermesh/routing/pkg/client/generated/injection/informers/flow/v1alpha1/splitter"
+	splitterreconciler "github.com/triggermesh/routing/pkg/client/generated/injection/reconciler/flow/v1alpha1/splitter"
 )
 
 type SplitterEnv struct {

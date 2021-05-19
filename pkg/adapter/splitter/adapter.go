@@ -32,7 +32,7 @@ import (
 	"knative.dev/eventing/pkg/kncloudevents"
 	"knative.dev/eventing/pkg/utils"
 
-	routinglisters "github.com/triggermesh/routing/pkg/client/generated/listers/routing/v1alpha1"
+	routinglisters "github.com/triggermesh/routing/pkg/client/generated/listers/flow/v1alpha1"
 )
 
 const (

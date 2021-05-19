@@ -20,11 +20,11 @@ metadata:
 spec:
   selector:
     matchLabels:
-      routing.triggermesh.io/role: splitter
+      flow.triggermesh.io/role: splitter
   template:
     metadata:
       labels:
-        routing.triggermesh.io/role: splitter
+        flow.triggermesh.io/role: splitter
     spec:
       serviceAccountName: triggermesh-splitter-deployment
       enableServiceLinks: false
@@ -88,7 +88,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    routing.triggermesh.io/role: splitter
+    flow.triggermesh.io/role: splitter
   name: splitter-service
   namespace: routing
 spec:
@@ -102,4 +102,4 @@ spec:
       protocol: TCP
       targetPort: 9092
   selector:
-    routing.triggermesh.io/role: splitter
+    flow.triggermesh.io/role: splitter

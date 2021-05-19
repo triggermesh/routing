@@ -29,8 +29,8 @@ import (
 	"knative.dev/pkg/tracker"
 
 	"github.com/kelseyhightower/envconfig"
-	filterinformer "github.com/triggermesh/routing/pkg/client/generated/injection/informers/routing/v1alpha1/filter"
-	filterreconciler "github.com/triggermesh/routing/pkg/client/generated/injection/reconciler/routing/v1alpha1/filter"
+	filterinformer "github.com/triggermesh/routing/pkg/client/generated/injection/informers/flow/v1alpha1/filter"
+	filterreconciler "github.com/triggermesh/routing/pkg/client/generated/injection/reconciler/flow/v1alpha1/filter"
 )
 
 type FilterEnv struct {

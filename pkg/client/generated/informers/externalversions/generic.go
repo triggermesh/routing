@@ -21,7 +21,7 @@ package externalversions
 import (
 	"fmt"
 
-	v1alpha1 "github.com/triggermesh/routing/pkg/apis/routing/v1alpha1"
+	v1alpha1 "github.com/triggermesh/routing/pkg/apis/flow/v1alpha1"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	cache "k8s.io/client-go/tools/cache"
 )
@@ -52,11 +52,11 @@ func (f *genericInformer) Lister() cache.GenericLister {
 // TODO extend this to unknown resources with a client pool
 func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource) (GenericInformer, error) {
 	switch resource {
-	// Group=routing.triggermesh.io, Version=v1alpha1
+	// Group=flow.triggermesh.io, Version=v1alpha1
 	case v1alpha1.SchemeGroupVersion.WithResource("filters"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Routing().V1alpha1().Filters().Informer()}, nil
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Flow().V1alpha1().Filters().Informer()}, nil
 	case v1alpha1.SchemeGroupVersion.WithResource("splitters"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Routing().V1alpha1().Splitters().Informer()}, nil
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Flow().V1alpha1().Splitters().Informer()}, nil
 
 	}
 
