@@ -44,7 +44,7 @@ import (
 
 const (
 	defaultControllerAgentName = "splitter-controller"
-	defaultFinalizerName       = "splitters.routing.triggermesh.io"
+	defaultFinalizerName       = "splitters.flow.triggermesh.io"
 )
 
 // NewImpl returns a controller.Impl that handles queuing and feeding work from
@@ -92,7 +92,7 @@ func NewImpl(ctx context.Context, r Interface, optionsFns ...controller.OptionsF
 
 	logger = logger.With(
 		zap.String(logkey.ControllerType, ctrTypeName),
-		zap.String(logkey.Kind, "routing.triggermesh.io.Splitter"),
+		zap.String(logkey.Kind, "flow.triggermesh.io.Splitter"),
 	)
 
 	impl := controller.NewImpl(rec, logger, ctrTypeName)

@@ -76,7 +76,7 @@ func main() {
 
 	routingClient := routingv1alpha1.NewForConfigOrDie(cfg)
 	routingFactory := routinginformers.NewSharedInformerFactory(routingClient, controller.GetResyncPeriod(ctx))
-	routingInformer := routingFactory.Routing().V1alpha1().Splitters()
+	routingInformer := routingFactory.Flow().V1alpha1().Splitters()
 
 	// Watch the logging config map and dynamically update logging levels.
 	configMapWatcher := configmap.NewInformedWatcher(kubeClient, system.Namespace())

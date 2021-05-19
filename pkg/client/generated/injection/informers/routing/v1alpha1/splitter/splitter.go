@@ -37,7 +37,7 @@ type Key struct{}
 
 func withInformer(ctx context.Context) (context.Context, controller.Informer) {
 	f := factory.Get(ctx)
-	inf := f.Routing().V1alpha1().Splitters()
+	inf := f.Flow().V1alpha1().Splitters()
 	return context.WithValue(ctx, Key{}, inf), inf.Informer()
 }
 

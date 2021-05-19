@@ -24,21 +24,21 @@ import (
 	testing "k8s.io/client-go/testing"
 )
 
-type FakeRoutingV1alpha1 struct {
+type FakeFlowV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakeRoutingV1alpha1) Filters(namespace string) v1alpha1.FilterInterface {
+func (c *FakeFlowV1alpha1) Filters(namespace string) v1alpha1.FilterInterface {
 	return &FakeFilters{c, namespace}
 }
 
-func (c *FakeRoutingV1alpha1) Splitters(namespace string) v1alpha1.SplitterInterface {
+func (c *FakeFlowV1alpha1) Splitters(namespace string) v1alpha1.SplitterInterface {
 	return &FakeSplitters{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *FakeRoutingV1alpha1) RESTClient() rest.Interface {
+func (c *FakeFlowV1alpha1) RESTClient() rest.Interface {
 	var ret *rest.RESTClient
 	return ret
 }

@@ -57,7 +57,7 @@ type splitters struct {
 }
 
 // newSplitters returns a Splitters
-func newSplitters(c *RoutingV1alpha1Client, namespace string) *splitters {
+func newSplitters(c *FlowV1alpha1Client, namespace string) *splitters {
 	return &splitters{
 		client: c.RESTClient(),
 		ns:     namespace,

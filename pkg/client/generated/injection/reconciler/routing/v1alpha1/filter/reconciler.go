@@ -313,7 +313,7 @@ func (r *reconcilerImpl) updateStatus(ctx context.Context, existing *v1alpha1.Fi
 		// The first iteration tries to use the injectionInformer's state, subsequent attempts fetch the latest state via API.
 		if attempts > 0 {
 
-			getter := r.Client.RoutingV1alpha1().Filters(desired.Namespace)
+			getter := r.Client.FlowV1alpha1().Filters(desired.Namespace)
 
 			existing, err = getter.Get(ctx, desired.Name, metav1.GetOptions{})
 			if err != nil {
@@ -332,7 +332,7 @@ func (r *reconcilerImpl) updateStatus(ctx context.Context, existing *v1alpha1.Fi
 
 		existing.Status = desired.Status
 
-		updater := r.Client.RoutingV1alpha1().Filters(existing.Namespace)
+		updater := r.Client.FlowV1alpha1().Filters(existing.Namespace)
 
 		_, err = updater.UpdateStatus(ctx, existing, metav1.UpdateOptions{})
 		return err
@@ -389,7 +389,7 @@ func (r *reconcilerImpl) updateFinalizersFiltered(ctx context.Context, resource 
 		return resource, err
 	}
 
-	patcher := r.Client.RoutingV1alpha1().Filters(resource.Namespace)
+	patcher := r.Client.FlowV1alpha1().Filters(resource.Namespace)
 
 	resourceName := resource.Name
 	updated, err := patcher.Patch(ctx, resourceName, types.MergePatchType, patch, metav1.PatchOptions{})

@@ -35,6 +35,6 @@ func init() {
 
 func withInformer(ctx context.Context) (context.Context, controller.Informer) {
 	f := fake.Get(ctx)
-	inf := f.Routing().V1alpha1().Splitters()
+	inf := f.Flow().V1alpha1().Splitters()
 	return context.WithValue(ctx, splitter.Key{}, inf), inf.Informer()
 }

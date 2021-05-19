@@ -17,5 +17,5 @@ limitations under the License.
 package routing
 
 const (
-	GroupName = "routing.triggermesh.io"
+	GroupName = "flow.triggermesh.io"
 )

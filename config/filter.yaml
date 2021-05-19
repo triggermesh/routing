@@ -20,11 +20,11 @@ metadata:
 spec:
   selector:
     matchLabels:
-      routing.triggermesh.io/role: filter
+      flow.triggermesh.io/role: filter
   template:
     metadata:
       labels:
-        routing.triggermesh.io/role: filter
+        flow.triggermesh.io/role: filter
     spec:
       serviceAccountName: triggermesh-filter-deployment
       enableServiceLinks: false
@@ -88,7 +88,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    routing.triggermesh.io/role: filter
+    flow.triggermesh.io/role: filter
   name: filter-service
   namespace: routing
 spec:
@@ -102,4 +102,4 @@ spec:
       protocol: TCP
       targetPort: 9092
   selector:
-    routing.triggermesh.io/role: filter
+    flow.triggermesh.io/role: filter

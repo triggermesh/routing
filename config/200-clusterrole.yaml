@@ -19,7 +19,7 @@ metadata:
 aggregationRule:
   clusterRoleSelectors:
   - matchLabels:
-      routing.triggermesh.io/controller: "true"
+      flow.triggermesh.io/routing-controller: "true"
 rules: [] # Rules are automatically filled in by the controller manager.
 ---
 kind: ClusterRole
@@ -27,7 +27,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: triggermesh-routing-core
   labels:
-    routing.triggermesh.io/controller: "true"
+    flow.triggermesh.io/routing-controller: "true"
 rules:
   - apiGroups:
     - ""
@@ -76,9 +76,10 @@ rules:
     - patch
     - watch
   - apiGroups:
-    - routing.triggermesh.io
+    - flow.triggermesh.io
     resources:
-    - "*"
+    - filters
+    - splitters
     verbs:
     - get
     - list
@@ -103,7 +104,7 @@ rules:
     - list
     - watch
   - apiGroups:
-    - routing.triggermesh.io
+    - flow.triggermesh.io
     resources:
     - filters
     verbs:
@@ -125,7 +126,7 @@ rules:
     - list
     - watch
   - apiGroups:
-    - routing.triggermesh.io
+    - flow.triggermesh.io
     resources:
     - splitters
     verbs:
@@ -154,7 +155,7 @@ metadata:
     duck.knative.dev/addressable: "true"
 rules:
 - apiGroups:
-  - routing.triggermesh.io
+  - flow.triggermesh.io
   resources:
   - filters
   - filters/status

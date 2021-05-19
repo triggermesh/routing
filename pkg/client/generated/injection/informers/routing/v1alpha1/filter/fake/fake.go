@@ -35,6 +35,6 @@ func init() {
 
 func withInformer(ctx context.Context) (context.Context, controller.Informer) {
 	f := fake.Get(ctx)
-	inf := f.Routing().V1alpha1().Filters()
+	inf := f.Flow().V1alpha1().Filters()
 	return context.WithValue(ctx, filter.Key{}, inf), inf.Informer()
 }

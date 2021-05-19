@@ -20,8 +20,8 @@ package fake
 
 import (
 	clientset "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset"
-	routingv1alpha1 "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset/typed/routing/v1alpha1"
-	fakeroutingv1alpha1 "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset/typed/routing/v1alpha1/fake"
+	flowv1alpha1 "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset/typed/routing/v1alpha1"
+	fakeflowv1alpha1 "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset/typed/routing/v1alpha1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"
@@ -76,7 +76,7 @@ func (c *Clientset) Tracker() testing.ObjectTracker {
 
 var _ clientset.Interface = &Clientset{}
 
-// RoutingV1alpha1 retrieves the RoutingV1alpha1Client
-func (c *Clientset) RoutingV1alpha1() routingv1alpha1.RoutingV1alpha1Interface {
-	return &fakeroutingv1alpha1.FakeRoutingV1alpha1{Fake: &c.Fake}
+// FlowV1alpha1 retrieves the FlowV1alpha1Client
+func (c *Clientset) FlowV1alpha1() flowv1alpha1.FlowV1alpha1Interface {
+	return &fakeflowv1alpha1.FakeFlowV1alpha1{Fake: &c.Fake}
 }

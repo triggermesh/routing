@@ -32,13 +32,13 @@ import (
 
 // FakeFilters implements FilterInterface
 type FakeFilters struct {
-	Fake *FakeRoutingV1alpha1
+	Fake *FakeFlowV1alpha1
 	ns   string
 }
 
-var filtersResource = schema.GroupVersionResource{Group: "routing.triggermesh.io", Version: "v1alpha1", Resource: "filters"}
+var filtersResource = schema.GroupVersionResource{Group: "flow.triggermesh.io", Version: "v1alpha1", Resource: "filters"}
 
-var filtersKind = schema.GroupVersionKind{Group: "routing.triggermesh.io", Version: "v1alpha1", Kind: "Filter"}
+var filtersKind = schema.GroupVersionKind{Group: "flow.triggermesh.io", Version: "v1alpha1", Kind: "Filter"}
 
 // Get takes name of the filter, and returns the corresponding filter object, and an error if there is any.
 func (c *FakeFilters) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.Filter, err error) {

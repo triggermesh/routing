@@ -57,7 +57,7 @@ type filters struct {
 }
 
 // newFilters returns a Filters
-func newFilters(c *RoutingV1alpha1Client, namespace string) *filters {
+func newFilters(c *FlowV1alpha1Client, namespace string) *filters {
 	return &filters{
 		client: c.RESTClient(),
 		ns:     namespace,

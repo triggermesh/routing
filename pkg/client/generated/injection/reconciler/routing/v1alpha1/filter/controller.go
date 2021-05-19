@@ -44,7 +44,7 @@ import (
 
 const (
 	defaultControllerAgentName = "filter-controller"
-	defaultFinalizerName       = "filters.routing.triggermesh.io"
+	defaultFinalizerName       = "filters.flow.triggermesh.io"
 )
 
 // NewImpl returns a controller.Impl that handles queuing and feeding work from
@@ -92,7 +92,7 @@ func NewImpl(ctx context.Context, r Interface, optionsFns ...controller.OptionsF
 
 	logger = logger.With(
 		zap.String(logkey.ControllerType, ctrTypeName),
-		zap.String(logkey.Kind, "routing.triggermesh.io.Filter"),
+		zap.String(logkey.Kind, "flow.triggermesh.io.Filter"),
 	)
 
 	impl := controller.NewImpl(rec, logger, ctrTypeName)

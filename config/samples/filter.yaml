@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: routing.triggermesh.io/v1alpha1
+apiVersion: flow.triggermesh.io/v1alpha1
 kind: Filter
 metadata:
   name: filter-benchmark
@@ -34,7 +34,7 @@ spec:
   schedule: '*/1 * * * *'
   sink:
     ref:
-      apiVersion: routing.triggermesh.io/v1alpha1
+      apiVersion: flow.triggermesh.io/v1alpha1
       kind: Filter
       name: filter-test
 ---
@@ -48,7 +48,7 @@ spec:
   schedule: '*/1 * * * *'
   sink:
     ref:
-      apiVersion: routing.triggermesh.io/v1alpha1
+      apiVersion: flow.triggermesh.io/v1alpha1
       kind: Filter
       name: filter-test
 ---
@@ -62,7 +62,7 @@ spec:
   schedule: '*/1 * * * *'
   sink:
     ref:
-      apiVersion: routing.triggermesh.io/v1alpha1
+      apiVersion: flow.triggermesh.io/v1alpha1
       kind: Filter
       name: filter-test
 ---

@@ -24,27 +24,27 @@ import (
 	rest "k8s.io/client-go/rest"
 )
 
-type RoutingV1alpha1Interface interface {
+type FlowV1alpha1Interface interface {
 	RESTClient() rest.Interface
 	FiltersGetter
 	SplittersGetter
 }
 
-// RoutingV1alpha1Client is used to interact with features provided by the routing.triggermesh.io group.
-type RoutingV1alpha1Client struct {
+// FlowV1alpha1Client is used to interact with features provided by the flow.triggermesh.io group.
+type FlowV1alpha1Client struct {
 	restClient rest.Interface
 }
 
-func (c *RoutingV1alpha1Client) Filters(namespace string) FilterInterface {
+func (c *FlowV1alpha1Client) Filters(namespace string) FilterInterface {
 	return newFilters(c, namespace)
 }
 
-func (c *RoutingV1alpha1Client) Splitters(namespace string) SplitterInterface {
+func (c *FlowV1alpha1Client) Splitters(namespace string) SplitterInterface {
 	return newSplitters(c, namespace)
 }
 
-// NewForConfig creates a new RoutingV1alpha1Client for the given config.
-func NewForConfig(c *rest.Config) (*RoutingV1alpha1Client, error) {
+// NewForConfig creates a new FlowV1alpha1Client for the given config.
+func NewForConfig(c *rest.Config) (*FlowV1alpha1Client, error) {
 	config := *c
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
@@ -53,12 +53,12 @@ func NewForConfig(c *rest.Config) (*RoutingV1alpha1Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &RoutingV1alpha1Client{client}, nil
+	return &FlowV1alpha1Client{client}, nil
 }
 
-// NewForConfigOrDie creates a new RoutingV1alpha1Client for the given config and
+// NewForConfigOrDie creates a new FlowV1alpha1Client for the given config and
 // panics if there is an error in the config.
-func NewForConfigOrDie(c *rest.Config) *RoutingV1alpha1Client {
+func NewForConfigOrDie(c *rest.Config) *FlowV1alpha1Client {
 	client, err := NewForConfig(c)
 	if err != nil {
 		panic(err)
@@ -66,9 +66,9 @@ func NewForConfigOrDie(c *rest.Config) *RoutingV1alpha1Client {
 	return client
 }
 
-// New creates a new RoutingV1alpha1Client for the given RESTClient.
-func New(c rest.Interface) *RoutingV1alpha1Client {
-	return &RoutingV1alpha1Client{c}
+// New creates a new FlowV1alpha1Client for the given RESTClient.
+func New(c rest.Interface) *FlowV1alpha1Client {
+	return &FlowV1alpha1Client{c}
 }
 
 func setConfigDefaults(config *rest.Config) error {
@@ -86,7 +86,7 @@ func setConfigDefaults(config *rest.Config) error {
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *RoutingV1alpha1Client) RESTClient() rest.Interface {
+func (c *FlowV1alpha1Client) RESTClient() rest.Interface {
 	if c == nil {
 		return nil
 	}

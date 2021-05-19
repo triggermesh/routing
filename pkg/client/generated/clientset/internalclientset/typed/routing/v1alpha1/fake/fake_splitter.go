@@ -32,13 +32,13 @@ import (
 
 // FakeSplitters implements SplitterInterface
 type FakeSplitters struct {
-	Fake *FakeRoutingV1alpha1
+	Fake *FakeFlowV1alpha1
 	ns   string
 }
 
-var splittersResource = schema.GroupVersionResource{Group: "routing.triggermesh.io", Version: "v1alpha1", Resource: "splitters"}
+var splittersResource = schema.GroupVersionResource{Group: "flow.triggermesh.io", Version: "v1alpha1", Resource: "splitters"}
 
-var splittersKind = schema.GroupVersionKind{Group: "routing.triggermesh.io", Version: "v1alpha1", Kind: "Splitter"}
+var splittersKind = schema.GroupVersionKind{Group: "flow.triggermesh.io", Version: "v1alpha1", Kind: "Splitter"}
 
 // Get takes name of the splitter, and returns the corresponding splitter object, and an error if there is any.
 func (c *FakeSplitters) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.Splitter, err error) {

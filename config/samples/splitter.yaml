@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: routing.triggermesh.io/v1alpha1
+apiVersion: flow.triggermesh.io/v1alpha1
 kind: Splitter
 metadata:
   name: splitter-test
@@ -63,7 +63,7 @@ spec:
       type: dev.knative.sources.ping
   subscriber:
     ref:
-      apiVersion: routing.triggermesh.io/v1alpha1
+      apiVersion: flow.triggermesh.io/v1alpha1
       kind: Splitter
       name: splitter-test
 ---

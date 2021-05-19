@@ -62,13 +62,13 @@ func NewFilteredSplitterInformer(client internalclientset.Interface, namespace s
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.RoutingV1alpha1().Splitters(namespace).List(context.TODO(), options)
+				return client.FlowV1alpha1().Splitters(namespace).List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.RoutingV1alpha1().Splitters(namespace).Watch(context.TODO(), options)
+				return client.FlowV1alpha1().Splitters(namespace).Watch(context.TODO(), options)
 			},
 		},
 		&routingv1alpha1.Splitter{},

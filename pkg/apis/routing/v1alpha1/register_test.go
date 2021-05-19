@@ -23,15 +23,15 @@ import (
 )
 
 func TestRegisterHelpers(t *testing.T) {
-	if got, want := Kind("Foo"), "Foo.routing.triggermesh.io"; got.String() != want {
+	if got, want := Kind("Foo"), "Foo.flow.triggermesh.io"; got.String() != want {
 		t.Errorf("Kind(Foo) = %v, want %v", got.String(), want)
 	}
 
-	if got, want := Resource("Foo"), "Foo.routing.triggermesh.io"; got.String() != want {
+	if got, want := Resource("Foo"), "Foo.flow.triggermesh.io"; got.String() != want {
 		t.Errorf("Resource(Foo) = %v, want %v", got.String(), want)
 	}
 
-	if got, want := SchemeGroupVersion.String(), "routing.triggermesh.io/v1alpha1"; got != want {
+	if got, want := SchemeGroupVersion.String(), "flow.triggermesh.io/v1alpha1"; got != want {
 		t.Errorf("SchemeGroupVersion() = %v, want %v", got, want)
 	}
 

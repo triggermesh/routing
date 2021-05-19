@@ -44,7 +44,7 @@ func withInformer(ctx context.Context) (context.Context, []controller.Informer) 
 	infs := []controller.Informer{}
 	for _, selector := range labelSelectors {
 		f := factoryfiltered.Get(ctx, selector)
-		inf := f.Routing().V1alpha1().Splitters()
+		inf := f.Flow().V1alpha1().Splitters()
 		ctx = context.WithValue(ctx, filtered.Key{Selector: selector}, inf)
 		infs = append(infs, inf.Informer())
 	}

@@ -172,9 +172,9 @@ type SharedInformerFactory interface {
 	ForResource(resource schema.GroupVersionResource) (GenericInformer, error)
 	WaitForCacheSync(stopCh <-chan struct{}) map[reflect.Type]bool
 
-	Routing() routing.Interface
+	Flow() routing.Interface
 }
 
-func (f *sharedInformerFactory) Routing() routing.Interface {
+func (f *sharedInformerFactory) Flow() routing.Interface {
 	return routing.New(f, f.namespace, f.tweakListOptions)
 }
