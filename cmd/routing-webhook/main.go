@@ -29,7 +29,7 @@ import (
 	"knative.dev/pkg/webhook/resourcesemantics"
 	"knative.dev/pkg/webhook/resourcesemantics/validation"
 
-	"github.com/triggermesh/routing/pkg/apis/routing/v1alpha1"
+	"github.com/triggermesh/routing/pkg/apis/flow/v1alpha1"
 )
 
 var types = map[schema.GroupVersionKind]resourcesemantics.GenericCRD{

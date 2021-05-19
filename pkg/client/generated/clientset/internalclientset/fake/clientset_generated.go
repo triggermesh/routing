@@ -20,8 +20,8 @@ package fake
 
 import (
 	clientset "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset"
-	flowv1alpha1 "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset/typed/routing/v1alpha1"
-	fakeflowv1alpha1 "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset/typed/routing/v1alpha1/fake"
+	flowv1alpha1 "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset/typed/flow/v1alpha1"
+	fakeflowv1alpha1 "github.com/triggermesh/routing/pkg/client/generated/clientset/internalclientset/typed/flow/v1alpha1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"

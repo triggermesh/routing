@@ -30,8 +30,8 @@ import (
 	"knative.dev/pkg/resolver"
 	"knative.dev/pkg/tracker"
 
-	routingv1alpha1 "github.com/triggermesh/routing/pkg/apis/routing/v1alpha1"
-	splitterreconciler "github.com/triggermesh/routing/pkg/client/generated/injection/reconciler/routing/v1alpha1/splitter"
+	routingv1alpha1 "github.com/triggermesh/routing/pkg/apis/flow/v1alpha1"
+	splitterreconciler "github.com/triggermesh/routing/pkg/client/generated/injection/reconciler/flow/v1alpha1/splitter"
 )
 
 // Reconciler implements addressableservicereconciler.Interface for
