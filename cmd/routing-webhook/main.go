@@ -43,7 +43,7 @@ func NewFilterValidationAdmissionController(ctx context.Context, cmw configmap.W
 	return validation.NewAdmissionController(ctx,
 
 		// Name of the resource webhook.
-		"validation.webhook.flow.triggermesh.io",
+		"validation.webhook.routing.triggermesh.io",
 
 		// The path on which to serve the webhook.
 		"/validation",
