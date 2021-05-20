@@ -40,7 +40,7 @@ import (
 
 const (
 	defaultMetricsPort = 9092
-	component          = "splitter-service"
+	component          = "splitter"
 )
 
 type envConfig struct {

@@ -40,7 +40,7 @@ import (
 
 const (
 	defaultMetricsPort = 9092
-	component          = "filter-service"
+	component          = "filter"
 )
 
 type envConfig struct {

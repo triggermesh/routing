@@ -27,7 +27,7 @@ import (
 )
 
 const (
-	component = "routing-service"
+	component = "routing-controller"
 )
 
 func main() {
