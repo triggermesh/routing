@@ -79,7 +79,9 @@ rules:
     - flow.triggermesh.io
     resources:
     - filters
+    - filters/status
     - splitters
+    - splitters/status
     verbs:
     - get
     - list
