@@ -32,7 +32,7 @@ spec:
       - name: filter
         terminationMessagePolicy: FallbackToLogsOnError
         image: ko://github.com/triggermesh/routing/cmd/filter-deployment
-        readinessProbe: &probe
+        readinessProbe:
           failureThreshold: 3
           httpGet:
             path: /healthz
@@ -42,7 +42,14 @@ spec:
           successThreshold: 1
           timeoutSeconds: 1
         livenessProbe:
-          <<: *probe
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 2
+          successThreshold: 1
+          timeoutSeconds: 1
           initialDelaySeconds: 5
         resources:
           requests:
