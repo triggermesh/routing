@@ -69,10 +69,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        - name: FILTER_SERVICE
-          value: filter-service
-        - name: SPLITTER_SERVICE
-          value: splitter-service
+        - name: FILTER_IMAGE
+          value: ko://github.com/triggermesh/routing/cmd/filter-adapter
+        - name: SPLITTER_IMAGE
+          value: ko://github.com/triggermesh/routing/cmd/splitter-adapter
 
         securityContext:
           allowPrivilegeEscalation: false

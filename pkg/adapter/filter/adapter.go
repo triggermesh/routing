@@ -29,30 +29,22 @@ import (
 	cehttp "github.com/cloudevents/sdk-go/v2/protocol/http"
 	"go.uber.org/zap"
 
+	pkgadapter "knative.dev/eventing/pkg/adapter/v2"
 	"knative.dev/eventing/pkg/kncloudevents"
 	"knative.dev/eventing/pkg/utils"
+	"knative.dev/pkg/injection"
+	"knative.dev/pkg/logging"
 
+	"github.com/triggermesh/routing/pkg/adapter/common/env"
+	"github.com/triggermesh/routing/pkg/apis/flow/v1alpha1"
 	routingv1alpha1 "github.com/triggermesh/routing/pkg/apis/flow/v1alpha1"
+	informerv1alpha1 "github.com/triggermesh/routing/pkg/client/generated/injection/informers/flow/v1alpha1/filter"
 	routinglisters "github.com/triggermesh/routing/pkg/client/generated/listers/flow/v1alpha1"
 	"github.com/triggermesh/routing/pkg/eventfilter"
 	"github.com/triggermesh/routing/pkg/eventfilter/cel"
 )
 
-const (
-	// TODO make these constants configurable (either as env variables, config map, or part of broker spec).
-	//  Issue: https://github.com/knative/eventing/issues/1777
-	// Constants for the underlying HTTP Client transport. These would enable better connection reuse.
-	// Set them on a 10:1 ratio, but this would actually depend on the Triggers' subscribers and the workload itself.
-	// These are magic numbers, partly set based on empirical evidence running performance workloads, and partly
-	// based on what serving is doing. See https://github.com/knative/serving/blob/master/pkg/network/transports.go.
-	defaultMaxIdleConnections        = 1000
-	defaultMaxIdleConnectionsPerHost = 100
-)
-
-type filterRef struct {
-	name      string
-	namespace string
-}
+const serverPort int = 8080
 
 // Handler parses Cloud Events, determines if they pass a filter, and sends them to a subscriber.
 type Handler struct {
@@ -60,37 +52,55 @@ type Handler struct {
 	receiver *kncloudevents.HTTPMessageReceiver
 	// sender sends requests to downstream services
 	sender *kncloudevents.HTTPMessageSender
-	// reporter reports stats of status code and dispatch time
-	// reporter StatsReporter
 
-	filterLister routinglisters.FilterLister
-	logger       *zap.Logger
+	filterLister routinglisters.FilterNamespaceLister
+	logger       *zap.SugaredLogger
 
 	// expressions is the map of trigger refs with precompiled CEL expressions
 	// TODO (tzununbekov): Add cleanup
 	expressions *expressionStorage
 }
 
-// NewHandler creates a new Handler and its associated MessageReceiver. The caller is responsible for
+// NewEnvConfig satisfies env.ConfigConstructor.
+// Returns an accessor for the source's adapter envConfig.
+func NewEnvConfig() env.ConfigAccessor {
+	return &env.Config{}
+}
+
+// NewAdapter creates a new Handler and its associated MessageReceiver. The caller is responsible for
 // Start()ing the returned Handler.
-func NewHandler(logger *zap.Logger, filterLister routinglisters.FilterLister, port int) (*Handler, error) {
-	kncloudevents.ConfigureConnectionArgs(&kncloudevents.ConnectionArgs{
-		MaxIdleConns:        defaultMaxIdleConnections,
-		MaxIdleConnsPerHost: defaultMaxIdleConnectionsPerHost,
-	})
+func NewAdapter(component string) pkgadapter.AdapterConstructor {
+	return func(ctx context.Context, _ pkgadapter.EnvConfigAccessor,
+		ceClient cloudevents.Client) pkgadapter.Adapter {
+		logger := logging.FromContext(ctx)
 
-	sender, err := kncloudevents.NewHTTPMessageSenderWithTarget("")
-	if err != nil {
-		return nil, fmt.Errorf("failed to create message sender: %w", err)
+		sender, err := kncloudevents.NewHTTPMessageSenderWithTarget("")
+		if err != nil {
+			logger.Panicf("failed to create message sender: %v", err)
+		}
+
+		informer := informerv1alpha1.Get(ctx)
+		ns := injection.GetNamespaceScope(ctx)
+
+		return &Handler{
+			receiver:     kncloudevents.NewHTTPMessageReceiver(serverPort),
+			sender:       sender,
+			filterLister: informer.Lister().Filters(ns),
+			logger:       logger,
+
+			expressions: newExpressionStorage(),
+		}
 	}
+}
 
-	return &Handler{
-		receiver:     kncloudevents.NewHTTPMessageReceiver(port),
-		sender:       sender,
-		filterLister: filterLister,
-		logger:       logger,
-		expressions:  newExpressionStorage(),
-	}, nil
+// RegisterHandlerFor implements MTAdapter.
+func (*Handler) RegisterHandlerFor(ctx context.Context, f *v1alpha1.Filter) error {
+	return nil
+}
+
+// DeregisterHandlerFor implements MTAdapter.
+func (*Handler) DeregisterHandlerFor(ctx context.Context, f *v1alpha1.Filter) error {
+	return nil
 }
 
 // Start begins to receive messages for the handler.
@@ -108,7 +118,7 @@ func (h *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	ref, err := parseRequestURI(request.RequestURI)
+	filter, err := parseRequestURI(request.RequestURI)
 	if err != nil {
 		h.logger.Info("Unable to parse path as filter", zap.Error(err), zap.String("path", request.RequestURI))
 		writer.WriteHeader(http.StatusBadRequest)
@@ -129,11 +139,11 @@ func (h *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	h.logger.Debug("Received message", zap.Any("filterRef", ref))
+	h.logger.Debug("Received message", zap.Any("filter", filter))
 
-	f, err := h.getFilter(ref)
+	f, err := h.getFilter(filter)
 	if err != nil {
-		h.logger.Info("Unable to get the Filter", zap.Error(err), zap.Any("filterRef", ref))
+		h.logger.Info("Unable to get the Filter", zap.Error(err), zap.Any("filter", filter))
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -142,7 +152,7 @@ func (h *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	if !exists {
 		cond, err = cel.CompileExpression(f.Spec.Expression)
 		if err != nil {
-			h.logger.Info("Failed to compile filter expression", zap.Error(err), zap.Any("filterRef", ref))
+			h.logger.Info("Failed to compile filter expression", zap.Error(err), zap.Any("filter", filter))
 			writer.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -158,7 +168,7 @@ func (h *Handler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	h.send(ctx, writer, request.Header, f.Status.SinkURI.String(), event)
 }
 
-func updateAttributes(fs routingv1alpha1.FilterStatus, event *event.Event) *event.Event {
+func updateAttributes(fs routingv1alpha1.RouterStatus, event *event.Event) *event.Event {
 	if len(fs.CloudEventAttributes) == 1 {
 		event.SetType(fs.CloudEventAttributes[0].Type)
 		event.SetSource(fs.CloudEventAttributes[0].Source)
@@ -259,8 +269,8 @@ func (h *Handler) writeResponse(ctx context.Context, writer http.ResponseWriter,
 	return resp.StatusCode, nil
 }
 
-func (h *Handler) getFilter(ref filterRef) (*routingv1alpha1.Filter, error) {
-	return h.filterLister.Filters(ref.namespace).Get(ref.name)
+func (h *Handler) getFilter(filter string) (*routingv1alpha1.Filter, error) {
+	return h.filterLister.Get(filter)
 }
 
 func filterEvent(ctx context.Context, filter cel.ConditionalFilter, event cloudevents.Event) eventfilter.FilterResult {
@@ -272,19 +282,10 @@ func filterEvent(ctx context.Context, filter cel.ConditionalFilter, event cloude
 	return filters.Filter(ctx, event)
 }
 
-func parseRequestURI(path string) (filterRef, error) {
+func parseRequestURI(path string) (string, error) {
 	parts := strings.Split(path, "/")
-	if len(parts) != 4 {
-		return filterRef{}, fmt.Errorf("incorrect number of parts in the path, expected 4, actual %d, '%s'", len(parts), path)
+	if len(parts) != 1 {
+		return "", fmt.Errorf("incorrect number of parts in the path, expected 2, actual %d, '%s'", len(parts), path)
 	}
-	if parts[0] != "" {
-		return filterRef{}, fmt.Errorf("text before the first slash, actual '%s'", path)
-	}
-	if parts[1] != "filters" {
-		return filterRef{}, fmt.Errorf("incorrect prefix, expected 'filters', actual '%s'", path)
-	}
-	return filterRef{
-		namespace: parts[2],
-		name:      parts[3],
-	}, nil
+	return parts[0], nil
 }

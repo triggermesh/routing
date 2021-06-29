@@ -4,13 +4,13 @@ ENV CGO_ENABLED 0
 ENV GOOS linux
 ENV GOARCH amd64
 
-WORKDIR /go/src/filter-deployment
+WORKDIR /go/src/splitter-adapter
 
 COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-RUN BIN_OUTPUT_DIR=/bin make filter-deployment && \
+RUN BIN_OUTPUT_DIR=/bin make splitter-adapter && \
     mkdir /kodata && \
     ls -lah hack && \
     mv .git/* /kodata/ && \
@@ -20,7 +20,7 @@ RUN BIN_OUTPUT_DIR=/bin make filter-deployment && \
 FROM scratch
 
 COPY --from=builder /kodata/ ${KO_DATA_PATH}/
-COPY --from=builder /bin/filter-deployment /
+COPY --from=builder /bin/splitter-adapter /
 COPY licenses/ /licenses/
 
-ENTRYPOINT ["/filter-deployment"]
+ENTRYPOINT ["/splitter-adapter"]

@@ -21,6 +21,6 @@ import (
 )
 
 // SetDefaults implements apis.Defaultable
-func (f *Splitter) SetDefaults(ctx context.Context) {
+func (s *Splitter) SetDefaults(ctx context.Context) {
 	// Nothing to default.
 }

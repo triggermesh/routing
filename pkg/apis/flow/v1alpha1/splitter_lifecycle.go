@@ -19,15 +19,7 @@ package v1alpha1
 import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"knative.dev/pkg/apis"
-)
-
-var splitterCondSet = apis.NewLivingConditionSet(SplitterConditionReady, SplitterConditionSinkReady, SplitterConditionServiceReady)
-
-const (
-	SplitterConditionReady = apis.ConditionReady
-
-	SplitterConditionSinkReady    apis.ConditionType = "SinkReady"
-	SplitterConditionServiceReady apis.ConditionType = "SplitterServiceReady"
+	duckv1 "knative.dev/pkg/apis/duck/v1"
 )
 
 // GetGroupVersionKind implements kmeta.OwnerRefable
@@ -37,36 +29,35 @@ func (*Splitter) GetGroupVersionKind() schema.GroupVersionKind {
 
 // GetConditionSet retrieves the condition set for this resource. Implements the KRShaped interface.
 func (s *Splitter) GetConditionSet() apis.ConditionSet {
-	return splitterCondSet
+	return routerConditionSet
 }
 
-// InitializeConditions sets the initial values to the conditions.
-func (ss *SplitterStatus) InitializeConditions() {
-	splitterCondSet.Manage(ss).InitializeConditions()
+// IsMultiTenant implements MultiTenant.
+func (*Splitter) IsMultiTenant() bool {
+	return true
 }
 
-// MarkServiceUnavailable updates Splitter status with Splitter Service Not Ready condition
-func (ss *SplitterStatus) MarkServiceUnavailable(name string) {
-	splitterCondSet.Manage(ss).MarkFalse(
-		SplitterConditionServiceReady,
-		"SplitterServiceUnavailable",
-		"Splitter Service %q is not ready.", name)
+// Supported event types
+const (
+	SplitterGenericEventType = "io.triggermesh.routing.splitter"
+)
+
+// GetEventTypes implements Router.
+func (*Splitter) GetEventTypes() []string {
+	return []string{
+		SplitterGenericEventType,
+	}
 }
 
-// MarkServiceAvailable updates Splitter status with Splitter Service Is Ready condition
-func (ss *SplitterStatus) MarkServiceAvailable() {
-	splitterCondSet.Manage(ss).MarkTrue(SplitterConditionServiceReady)
+// GetSink implements Router.
+func (s *Splitter) GetSink() *duckv1.Destination {
+	return s.Spec.Sink
 }
 
-// MarkSinkUnavailable updates Splitter status with Sink Not Ready condition
-func (ss *SplitterStatus) MarkSinkUnavailable() {
-	condSet.Manage(ss).MarkFalse(
-		ConditionSinkReady,
-		"SinkUnavailable",
-		"Sink is unavailable")
-}
-
-// MarkSinkAvailable updates Splitter status with Sink Is Ready condition
-func (ss *SplitterStatus) MarkSinkAvailable() {
-	condSet.Manage(ss).MarkTrue(ConditionSinkReady)
+// GetStatusManager implements Router.
+func (s *Splitter) GetStatusManager() *RouterStatusManager {
+	return &RouterStatusManager{
+		ConditionSet: s.GetConditionSet(),
+		RouterStatus: &s.Status,
+	}
 }
