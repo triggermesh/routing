@@ -32,7 +32,7 @@ const (
 
 func main() {
 	sharedmain.Main(component,
-		filter.New,
-		splitter.New,
+		filter.NewController,
+		splitter.NewController,
 	)
 }

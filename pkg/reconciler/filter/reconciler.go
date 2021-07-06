@@ -18,39 +18,22 @@ package filter
 
 import (
 	"context"
-	"fmt"
 
-	corev1listers "k8s.io/client-go/listers/core/v1"
-
-	"knative.dev/pkg/apis"
-	duckv1 "knative.dev/pkg/apis/duck/v1"
-	"knative.dev/pkg/logging"
-	"knative.dev/pkg/network"
 	"knative.dev/pkg/reconciler"
-	"knative.dev/pkg/resolver"
-	"knative.dev/pkg/tracker"
 
+	"github.com/triggermesh/routing/pkg/apis/flow/v1alpha1"
 	routingv1alpha1 "github.com/triggermesh/routing/pkg/apis/flow/v1alpha1"
 	filterreconciler "github.com/triggermesh/routing/pkg/client/generated/injection/reconciler/flow/v1alpha1/filter"
-)
-
-const (
-	eventType = "io.triggermesh.routing.filter"
+	listersv1alpha1 "github.com/triggermesh/routing/pkg/client/generated/listers/flow/v1alpha1"
+	"github.com/triggermesh/routing/pkg/reconciler/common"
 )
 
 // Reconciler implements addressableservicereconciler.Interface for
 // AddressableService resources.
 type Reconciler struct {
-	// Tracker builds an index of what resources are watching other resources
-	// so that we can immediately react to changes tracked resources.
-	Tracker tracker.Interface
-
-	// Listers index properties about resources
-	ServiceLister corev1listers.ServiceLister
-
-	sinkResolver *resolver.URIResolver
-
-	Filter FilterEnv
+	base         common.GenericServiceReconciler
+	filterLister func(namespace string) listersv1alpha1.FilterNamespaceLister
+	adapterCfg   *adapterConfig
 }
 
 // Check that our Reconciler implements Interface
@@ -58,56 +41,8 @@ var _ filterreconciler.Interface = (*Reconciler)(nil)
 
 // ReconcileKind implements Interface.ReconcileKind.
 func (r *Reconciler) ReconcileKind(ctx context.Context, o *routingv1alpha1.Filter) reconciler.Event {
-	logger := logging.FromContext(ctx)
+	// inject source into context for usage in reconciliation logic
+	ctx = v1alpha1.WithRouter(ctx, o)
 
-	if err := r.Tracker.TrackReference(tracker.Reference{
-		APIVersion: "v1",
-		Kind:       "Service",
-		Name:       r.Filter.Name,
-		Namespace:  r.Filter.Namespace,
-	}, o); err != nil {
-		logger.Errorf("Error tracking service %v: %v", r.Filter, err)
-		return err
-	}
-
-	if _, err := r.ServiceLister.Services(r.Filter.Namespace).Get(r.Filter.Name); err != nil {
-		logger.Errorf("Error reconciling service %v: %v", r.Filter, err)
-		o.Status.MarkServiceUnavailable(fmt.Sprintf("%s/%s", r.Filter.Namespace, r.Filter.Name))
-		return err
-	}
-
-	url, err := apis.ParseURL(fmt.Sprintf("http://%s/filters/%s/%s",
-		network.GetServiceHostname(r.Filter.Name, r.Filter.Namespace), o.Namespace, o.Name))
-	if err != nil {
-		logger.Errorf("Error parsing service URL %v: %v", r.Filter, err)
-		o.Status.MarkServiceUnavailable(fmt.Sprintf("%s/%s", r.Filter.Namespace, r.Filter.Name))
-		return err
-	}
-
-	if o.Spec.Sink.Ref != nil && o.Spec.Sink.Ref.Namespace == "" {
-		o.Spec.Sink.Ref.Namespace = o.Namespace
-	}
-
-	sink, err := r.sinkResolver.URIFromDestinationV1(ctx, *o.Spec.Sink, o)
-	if err != nil {
-		logger.Errorf("Error resolving sink URI: %v", err)
-		o.Status.MarkSinkUnavailable()
-		return err
-	}
-
-	o.Status.MarkSinkAvailable()
-	o.Status.SinkURI = sink
-	o.Status.CloudEventAttributes = []duckv1.CloudEventAttributes{
-		{
-			Type:   eventType,
-			Source: o.SelfLink,
-		},
-	}
-
-	o.Status.MarkServiceAvailable()
-	o.Status.Address = &duckv1.Addressable{
-		URL: url,
-	}
-
-	return nil
+	return r.base.ReconcileAdapter(ctx, r)
 }

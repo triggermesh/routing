@@ -15,14 +15,14 @@
 apiVersion: flow.triggermesh.io/v1alpha1
 kind: Filter
 metadata:
-  name: filter-benchmark
+  name: filter-test
 spec:
   expression: ($id.first.(int64) + $id.second.(int64) >= 8) || $company.(string) == "bar" || $0.name.first.(string) == "Jo"
   sink: 
     ref:
-      apiVersion: v1
+      apiVersion: serving.knative.dev/v1
       kind: Service
-      name: thrpt-receiver
+      name: sockeye
 ---
 apiVersion: sources.knative.dev/v1beta2
 kind: PingSource

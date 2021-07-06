@@ -95,7 +95,7 @@ rules:
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: triggermesh-filter-deployment
+  name: filter-adapter
 rules:
   - apiGroups: 
     - ""
@@ -113,11 +113,23 @@ rules:
     - get
     - list
     - watch
+  - apiGroups:
+    - coordination.k8s.io
+    resources: 
+    - leases
+    verbs:
+    - get
+    - list
+    - create
+    - update
+    - delete
+    - patch
+    - watch
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: triggermesh-splitter-deployment
+  name: splitter-adapter
 rules:
   - apiGroups: 
     - ""
@@ -134,6 +146,18 @@ rules:
     verbs:
     - get
     - list
+    - watch
+  - apiGroups:
+    - coordination.k8s.io
+    resources: 
+    - leases
+    verbs:
+    - get
+    - list
+    - create
+    - update
+    - delete
+    - patch
     - watch
 ---
 # Use this aggregated ClusterRole when you need readonly access to "Addressables"

@@ -40,7 +40,7 @@ type Filter struct {
 
 	// Status communicates the observed state of the Filter (from the controller).
 	// +optional
-	Status FilterStatus `json:"status,omitempty"`
+	Status RouterStatus `json:"status,omitempty"`
 }
 
 var (
@@ -50,6 +50,9 @@ var (
 	_ kmeta.OwnerRefable = (*Filter)(nil)
 	// Check that the type conforms to the duck Knative Resource shape.
 	_ duckv1.KRShaped = (*Filter)(nil)
+	_ multiTenant     = (*Filter)(nil)
+
+	_ Router = (*Filter)(nil)
 )
 
 // FilterSpec contains CEL expression string and the destination sink
@@ -58,15 +61,6 @@ type FilterSpec struct {
 
 	// Sink is a reference to an object that will resolve to a domain name to use as the sink.
 	Sink *duckv1.Destination `json:"sink"`
-}
-
-// FilterStatus communicates the observed state of the Filter (from the controller).
-type FilterStatus struct {
-	duckv1.SourceStatus `json:",inline"`
-
-	// Address holds the information needed to connect this Filter up to receive events.
-	// +optional
-	Address *duckv1.Addressable `json:"address,omitempty"`
 }
 
 // FilterList is a list of Filter resources
@@ -82,4 +76,9 @@ type FilterList struct {
 // GetStatus retrieves the status of the resource. Implements the KRShaped interface.
 func (f *Filter) GetStatus() *duckv1.Status {
 	return &f.Status.Status
+}
+
+// AsRouter implements Router.
+func (f *Filter) AsRouter() string {
+	return "filter/" + f.Name
 }

@@ -40,7 +40,7 @@ type Splitter struct {
 
 	// Status communicates the observed state of the Splitter (from the controller).
 	// +optional
-	Status SplitterStatus `json:"status,omitempty"`
+	Status RouterStatus `json:"status,omitempty"`
 }
 
 var (
@@ -50,6 +50,9 @@ var (
 	_ kmeta.OwnerRefable = (*Splitter)(nil)
 	// Check that the type conforms to the duck Knative Resource shape.
 	_ duckv1.KRShaped = (*Splitter)(nil)
+	_ multiTenant     = (*Splitter)(nil)
+
+	_ Router = (*Splitter)(nil)
 )
 
 // SplitterSpec holds the desired state of the Splitter
@@ -65,15 +68,6 @@ type CloudEventContext struct {
 	Extensions map[string]string `json:"extensions"`
 }
 
-// SplitterStatus communicates the observed state of the Splitter (from the controller).
-type SplitterStatus struct {
-	duckv1.SourceStatus `json:",inline"`
-
-	// Address holds the information needed to connect this Splitter up to receive events.
-	// +optional
-	Address *duckv1.Addressable `json:"address,omitempty"`
-}
-
 // SplitterList is a list of Splitter resources
 //
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -87,4 +81,9 @@ type SplitterList struct {
 // GetStatus retrieves the status of the resource. Implements the KRShaped interface.
 func (s *Splitter) GetStatus() *duckv1.Status {
 	return &s.Status.Status
+}
+
+// AsRouter implements Router.
+func (s *Splitter) AsRouter() string {
+	return "splitter/" + s.Name
 }
