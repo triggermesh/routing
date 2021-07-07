@@ -46,7 +46,6 @@ rules:
     - ""
     resources:
     - configmaps
-    - services
     verbs: 
     - get
     - list
@@ -91,6 +90,66 @@ rules:
     - deletecollection
     - patch
     - watch
+  # Manage receive-adapters
+  - apiGroups:
+    - apps
+    resources:
+    - deployments
+    verbs:
+    - get
+    - list
+    - watch
+    - create
+    - update
+    - delete
+    - patch
+  - apiGroups:
+    - serving.knative.dev
+    resources:
+    - services
+    verbs:
+    - get
+    - list
+    - watch
+    - create
+    - update
+    - delete
+    - patch
+  # Manage resource-specific ServiceAccounts and RoleBindings
+  - apiGroups:
+    - ''
+    resources:
+    - serviceaccounts
+    verbs:
+    - list
+    - watch
+    - create
+  - apiGroups:
+    - ''
+    resources:
+    - serviceaccounts
+    resourceNames:
+    - filter-adapter
+    - splitter-adapter
+    verbs:
+    - update
+  - apiGroups:
+    - rbac.authorization.k8s.io
+    resources:
+    - rolebindings
+    verbs:
+    - list
+    - watch
+    - create
+  - apiGroups:
+    - rbac.authorization.k8s.io
+    resources:
+    - rolebindings
+    resourceNames:
+    - filter-adapter
+    - splitter-adapter
+    verbs:
+    - update
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
