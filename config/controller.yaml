@@ -27,17 +27,6 @@ spec:
       labels:
         app: routing-controller
     spec:
-      # To avoid node becoming SPOF, spread our replicas to different nodes.
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - podAffinityTerm:
-              labelSelector:
-                matchLabels:
-                  app: routing-controller
-              topologyKey: kubernetes.io/hostname
-            weight: 100
-
       serviceAccountName: triggermesh-routing-controller
       containers:
       - name: controller
