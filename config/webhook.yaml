@@ -16,7 +16,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: routing-webhook
-  namespace: routing
+  namespace: triggermesh
 spec:
   replicas: 1
   selector:

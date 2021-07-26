@@ -18,7 +18,7 @@ metadata:
   labels:
     role: routing-webhook
   name: routing-webhook
-  namespace: routing
+  namespace: triggermesh
 spec:
   ports:
     - port: 443
