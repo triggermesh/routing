@@ -19,7 +19,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: triggermesh-routing-controller
-    namespace: routing
+    namespace: triggermesh
 roleRef:
   kind: ClusterRole
   name: triggermesh-routing-admin
@@ -34,7 +34,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: triggermesh-routing-controller
-    namespace: routing
+    namespace: triggermesh
 roleRef:
   kind: ClusterRole
   name: addressable-resolver
