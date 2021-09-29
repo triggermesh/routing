@@ -17,10 +17,11 @@ limitations under the License.
 package main
 
 import (
-	"github.com/triggermesh/routing/pkg/adapter/common/sharedmain"
+	"knative.dev/eventing/pkg/adapter/v2"
+
 	"github.com/triggermesh/routing/pkg/adapter/filter"
 )
 
 func main() {
-	sharedmain.MainWithController(filter.NewEnvConfig, filter.NewController, filter.NewAdapter)
+	adapter.Main("filter", filter.NewEnvConfig, filter.NewAdapter)
 }
