@@ -1,3 +1,5 @@
+**This project is now archived, please go to the [triggermesh/triggermesh](https://github.com/triggermesh/triggermesh) repository where development continues.**
+
 # Triggermesh Routing
 
 Triggermesh Routing repository contains Kubernetes Custom Resources that are
